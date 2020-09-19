@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+    "down": "tnr:block/sequencer_down",
+    "up": "tnr:block/sequencer_up",
+    "north": "tnr:block/sequencer_north",
+    "south": "tnr:block/sequencer_south",
+    "east": "tnr:block/sequencer_east",
+    "west": "tnr:block/sequencer_west"
+  }
+}

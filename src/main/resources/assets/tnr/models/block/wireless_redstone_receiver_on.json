@@ -1,0 +1,7 @@
+{
+  "parent": "tnr:block/wireless_redstone_receiver",
+  "textures": {
+    "redstone": "minecraft:block/redstone_lamp_on",
+    "base": "tnr:block/gray"
+  }
+}

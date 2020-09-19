@@ -1,0 +1,15 @@
+{
+  "block.tnr.sequencer": "Redstone Sequencer",
+  "item.tnr.sequencer": "Redstone Sequencer",
+  "gui.tnr.sequencer.title": "Redstone Sequencer",
+
+  "block.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
+  "item.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
+
+  "subtitle.tnr.keypad_error": "An annoying buzz indicating an error",
+  "subtitle.tnr.timed_button_beep": "BEEP",
+  "subtitle.tnr.timed_button_long_beep": "BEEEEEEP",
+
+  "_comment": "Creative Tabs",
+  "itemGroup.tnr": "Totally Not Redstone"
+}

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "tnr:small_timed_button",
+    "tnr:medium_timed_button",
+    "tnr:large_timed_button"
+  ]
+}

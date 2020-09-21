@@ -3,6 +3,8 @@ package tv.mongotheelder.tnr.networking;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -15,7 +17,7 @@ import java.util.function.Supplier;
 
 public class PacketHandler {
     private static int ID = 0;
-    private static String PROTOCOL_VERSION = Integer.toString(1);
+    private static final String PROTOCOL_VERSION = Integer.toString(1);
 
     public static int nextID() {
         return ID++;
@@ -31,6 +33,8 @@ public class PacketHandler {
     public static void register() {
         registerMessage(SequencerUpdateNBTPacket.class, SequencerUpdateNBTPacket::encode, SequencerUpdateNBTPacket::decode, SequencerUpdateNBTPacket.Handler::handle);
         registerMessage(SequencerOpenGUIPacket.class, SequencerOpenGUIPacket::encode, SequencerOpenGUIPacket::decode, SequencerOpenGUIPacket.Handler::handle);
+        registerMessage(KeypadSetCodePacket.class, KeypadSetCodePacket::encode, KeypadSetCodePacket::decode, KeypadSetCodePacket.Handler::handle);
+        registerMessage(KeypadSetStatePacket.class, KeypadSetStatePacket::encode, KeypadSetStatePacket::decode, KeypadSetStatePacket.Handler::handle);
     }
 
     public static void sendToServer(Object msg) {
@@ -59,5 +63,20 @@ public class PacketHandler {
         }
     }
 
+    public static void sendKeypadSetCode(World world, BlockPos pos, String code) {
+        // Send code string to the server
+        if (world != null && world.isRemote) {
+            KeypadSetCodePacket msg = new KeypadSetCodePacket(pos, code);
+            PacketHandler.sendToServer(msg);
+        }
+    }
+
+    public static void sendKeypadSetState(World world, BlockPos pos, boolean state) {
+        // Send code string to the server
+        if (world != null && world.isRemote) {
+            KeypadSetStatePacket msg = new KeypadSetStatePacket(pos, state);
+            PacketHandler.sendToServer(msg);
+        }
+    }
 }
 

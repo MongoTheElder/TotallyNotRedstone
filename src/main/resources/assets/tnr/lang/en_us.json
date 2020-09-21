@@ -6,6 +6,9 @@
   "block.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
   "item.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
 
+  "gui.tnr.keypad.locked": "Locked",
+  "gui.tnr.keypad.unlocked": "Unlocked",
+
   "subtitle.tnr.keypad_error": "An annoying buzz indicating an error",
   "subtitle.tnr.timed_button_beep": "BEEP",
   "subtitle.tnr.timed_button_long_beep": "BEEEEEEP",

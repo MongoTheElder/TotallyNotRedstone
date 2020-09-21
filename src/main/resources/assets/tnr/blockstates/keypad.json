@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=south": {
+      "model": "tnr:block/keypad"
+    },
+    "facing=north": {
+      "model": "tnr:block/keypad",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "tnr:block/keypad",
+      "y": 90
+    },
+    "facing=east": {
+      "model": "tnr:block/keypad",
+      "y": 270
+    }
+  }
+}

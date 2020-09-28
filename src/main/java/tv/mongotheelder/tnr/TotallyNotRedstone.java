@@ -21,6 +21,8 @@ public class TotallyNotRedstone {
     public static final String LOCKED_KEY = "gui.tnr.keypad.locked";
     public static final String UNLOCKED_KEY = "gui.tnr.keypad.unlocked";
     public static final ResourceLocation KEYPAD_GUI_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/keypad_gui.png");
+    public static final ResourceLocation SEQUENCER_GUI_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/sequencer_gui.png");
+    public static final ResourceLocation GUI_BUTTONS_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/gui_buttons.png");
 
     public static IProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 

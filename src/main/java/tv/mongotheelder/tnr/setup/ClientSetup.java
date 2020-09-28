@@ -7,7 +7,6 @@ import tv.mongotheelder.tnr.keypad.KeypadScreen;
 public class ClientSetup {
     public static void init(final FMLClientSetupEvent event) {
         ScreenManager.registerFactory(Registration.KEYPAD_CONTAINER.get(), KeypadScreen::new);
-
+        //ScreenManager.registerFactory(Registration.SEQUENCER_CONTAINER.get(), OldSequencerContainerScreen::new);
     }
-
 }

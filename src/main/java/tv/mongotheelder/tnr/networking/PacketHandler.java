@@ -1,10 +1,15 @@
 package tv.mongotheelder.tnr.networking;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -24,7 +29,7 @@ public class PacketHandler {
     }
 
     public static final SimpleChannel HANDLER = NetworkRegistry.ChannelBuilder
-            .named(new ResourceLocation(TotallyNotRedstone.MODID, "redstone_sequencer"))
+            .named(new ResourceLocation(TotallyNotRedstone.MODID, "general"))
             .clientAcceptedVersions(PROTOCOL_VERSION::equals)
             .serverAcceptedVersions(PROTOCOL_VERSION::equals)
             .networkProtocolVersion(() -> PROTOCOL_VERSION)
@@ -41,6 +46,10 @@ public class PacketHandler {
         HANDLER.sendToServer(msg);
     }
 
+    public static void sendToPlayer(Object msg, ServerPlayerEntity player) {
+        HANDLER.sendTo(msg, player.connection.getNetworkManager(), NetworkDirection.PLAY_TO_CLIENT);
+    }
+
     private static <MSG> void registerMessage(Class<MSG> messageType, BiConsumer<MSG, PacketBuffer> encoder, Function<PacketBuffer, MSG> decoder, BiConsumer<MSG, Supplier<NetworkEvent.Context>> messageConsumer) {
         HANDLER.registerMessage(nextID(), messageType, encoder, decoder, messageConsumer);
         if (ID > 0xFF)
@@ -55,12 +64,9 @@ public class PacketHandler {
         }
     }
 
-    public static void sendSequencerOpenGUI(SequencerTile te) {
-        // Send config string to the server
-        if (te != null && te.getWorld() != null && te.getWorld().isRemote) {
-            SequencerOpenGUIPacket msg = new SequencerOpenGUIPacket(te.getPos());
-            PacketHandler.sendToServer(msg);
-        }
+    public static void sendSequencerOpenGUI(BlockPos pos, ServerPlayerEntity player) {
+        SequencerOpenGUIPacket msg = new SequencerOpenGUIPacket(pos);
+        PacketHandler.sendToPlayer(msg, player);
     }
 
     public static void sendKeypadSetCode(World world, BlockPos pos, String code) {

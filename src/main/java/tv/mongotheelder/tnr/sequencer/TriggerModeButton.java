@@ -1,27 +1,31 @@
-package tv.mongotheelder.tnr.gui;
+package tv.mongotheelder.tnr.sequencer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.ResourceLocation;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
-public class ColorSelectionWidget extends Button {
+public class TriggerModeButton extends AbstractButton {
+    protected final TriggerModeButton.IPressable onPress;
+    protected final SequencerMode mode;
     protected ResourceLocation resourceLocation;
-    protected int count;
-    protected int state;
+    protected boolean stateTriggered;
     protected int xTexStart;
     protected int yTexStart;
     protected int xDiffTex;
     protected int yDiffTex;
 
-    private static final Logger LOGGER = LogManager.getLogger();
+    public TriggerModeButton(int xIn, int yIn, int widthIn, int heightIn, SequencerMode mode, SequencerMode activeMode, TriggerModeButton.IPressable onPress) {
+        super(xIn, yIn, widthIn, heightIn, "");
+        this.onPress = onPress;
+        this.mode = mode;
+        this.stateTriggered = (mode == activeMode);
+    }
 
-    public ColorSelectionWidget(int xIn, int yIn, int widthIn, int heightIn, int count, String label, int state, Button.IPressable onPress) {
-        super(xIn, yIn, widthIn, heightIn, label, onPress);
-        this.state = state;
-        this.count = count;
+    public void onPress() {
+        this.onPress.onPress(this);
     }
 
     public void initTextureValues(int xTexStartIn, int yTexStartIn, int xDiffTexIn, int yDiffTexIn, ResourceLocation resourceLocationIn) {
@@ -32,23 +36,12 @@ public class ColorSelectionWidget extends Button {
         this.resourceLocation = resourceLocationIn;
     }
 
-    public void setState(int state) {
-        if (state < 0 || state >= count) {
-            LOGGER.error("Attempted to set button state outside acceptable range");
-            return;
-        }
-        this.state = state;
+    public void setStateTriggered(boolean triggered) {
+        this.stateTriggered = triggered;
     }
 
-    public void advanceState() {
-        state++;
-        if (state >= count) {
-            state = 0;
-        }
-    }
-
-    public int getState() {
-        return state;
+    public boolean isStateTriggered() {
+        return this.stateTriggered;
     }
 
     public void renderButton(int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
@@ -57,7 +50,9 @@ public class ColorSelectionWidget extends Button {
         RenderSystem.disableDepthTest();
         int i = this.xTexStart;
         int j = this.yTexStart;
-        i += this.xDiffTex * state;
+        if (this.stateTriggered) {
+            i += this.xDiffTex;
+        }
 
         if (this.isHovered()) {
             j += this.yDiffTex;
@@ -67,4 +62,8 @@ public class ColorSelectionWidget extends Button {
         RenderSystem.enableDepthTest();
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public interface IPressable {
+        void onPress(TriggerModeButton button);
+    }
 }

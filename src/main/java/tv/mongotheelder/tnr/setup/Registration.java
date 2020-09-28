@@ -9,7 +9,6 @@ import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.extensions.IForgeContainerType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -47,6 +46,7 @@ public class Registration {
     public static final RegistryObject<SequencerBlock> SEQUENCER_BLOCK = BLOCKS.register("sequencer", () -> new SequencerBlock(Block.Properties.create(Material.IRON).hardnessAndResistance(1.2f).sound(SoundType.METAL)));
     public static final RegistryObject<Item> SEQUENCER_ITEM = ITEMS.register("sequencer", () -> new BlockItem(SEQUENCER_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
     public static final RegistryObject<TileEntityType<SequencerTile>> SEQUENCER_TILE = TILES.register("sequencer", () -> TileEntityType.Builder.create(SequencerTile::new, SEQUENCER_BLOCK.get()).build(null));
+    //public static final RegistryObject<ContainerType<SequencerContainer>> SEQUENCER_CONTAINER = CONTAINERS.register("sequencer", () -> IForgeContainerType.create((windowId, inv, data) -> new SequencerContainer(windowId, TotallyNotRedstone.proxy.getClientWorld(), data.readBlockPos())));
 
     // Keypad
     public static final RegistryObject<Keypad> KEYPAD_BLOCK = BLOCKS.register("keypad", () -> new Keypad(Block.Properties.create(Material.IRON).hardnessAndResistance(1.2f).sound(SoundType.METAL)));

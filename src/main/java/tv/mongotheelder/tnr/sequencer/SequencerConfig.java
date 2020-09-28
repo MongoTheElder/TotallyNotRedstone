@@ -10,9 +10,9 @@ import java.util.Map;
 
 public class SequencerConfig {
     public static final int SEQUENCE_COUNT = 5;
+    public static final int COLOR_COUNT = SideColor.values().length;
     private SequencerMode mode = SequencerMode.NEVER;
-    private int triggerDelay;
-    private int triggerLevel;
+    private long triggerLevel;
     private final ArrayList<SequenceDefinition> sequenceDefinition = new ArrayList<>(SEQUENCE_COUNT);
     private final Map<String, SideColor> sideMap = new HashMap<>();
 
@@ -34,12 +34,8 @@ public class SequencerConfig {
             CompoundNBT sides = nbt.getCompound("sides");
             for (String key : sideMap.keySet()) {
                 if (sides.contains(key)) {
-                    String side = sides.getString(key);
-                    if (sideMap.containsKey(side)) {
-                        sideMap.put(key, SideColor.getByName(side));
-                    } else {
-                        sideMap.put(key, SideColor.OFF);
-                    }
+                    int index = sides.getInt(key);
+                    sideMap.put(key, SideColor.getByIndex(index));
                 }
             }
         }
@@ -48,17 +44,14 @@ public class SequencerConfig {
             if (trigger.contains("mode")) {
                 mode = SequencerMode.getByIndex(trigger.getInt("mode"));
             }
-            if (trigger.contains("delay")) {
-                triggerDelay = trigger.getInt("delay");
-            }
             if (trigger.contains("level")) {
-                triggerLevel = trigger.getInt("level");
+                triggerLevel = trigger.getLong("level");
             }
         }
         if (nbt.contains("sequence")) {
             CompoundNBT seq = nbt.getCompound("sequence");
             if (seq.contains("delays")) {
-                int[] delays = seq.getIntArray("delays");
+                long[] delays = seq.getLongArray("delays");
                 if (delays.length == SEQUENCE_COUNT) {
                     for (int i = 0; i < SEQUENCE_COUNT; i++) {
                         sequenceDefinition.get(i).setDelay(delays[i]);
@@ -66,7 +59,7 @@ public class SequencerConfig {
                 }
             }
             if (seq.contains("durations")) {
-                int[] durations = seq.getIntArray("durations");
+                long[] durations = seq.getLongArray("durations");
                 if (durations.length == SEQUENCE_COUNT) {
                     for (int i = 0; i < SEQUENCE_COUNT; i++) {
                         sequenceDefinition.get(i).setDuration(durations[i]);
@@ -86,27 +79,23 @@ public class SequencerConfig {
         // Guild the 'trigger' NBT tree
         CompoundNBT trigger = new CompoundNBT();
         trigger.putInt("mode", mode.getIndex());
-        trigger.putInt("delay", triggerDelay);
-        trigger.putInt("level", triggerLevel);
+        trigger.putLong("level", triggerLevel);
 
         // Build the 'sequence' NBT tree
         // This tree is a pivot of the objects with the delays and durations split into separate lists
         CompoundNBT sequence = new CompoundNBT();
-        CompoundNBT delays = new CompoundNBT();
-        int[] delayVals = new int[SEQUENCE_COUNT];
+
+        long[] delayVals = new long[SEQUENCE_COUNT];
         for(int i = 0; i < SEQUENCE_COUNT; i++) {
             delayVals[i] = sequenceDefinition.get(i).getDelay();
         }
-        delays.putIntArray("delays",delayVals);
-        CompoundNBT durations = new CompoundNBT();
-        int[] durationVals = new int[SEQUENCE_COUNT];
+        sequence.putLongArray("delays",delayVals);
+
+        long[] durationVals = new long[SEQUENCE_COUNT];
         for(int i = 0; i < SEQUENCE_COUNT; i++) {
             durationVals[i] = sequenceDefinition.get(i).getDuration();
         }
-        durations.putIntArray("durations", durationVals);
-
-        sequence.put("delays", delays);
-        sequence.put("durations", durations);
+        sequence.putLongArray("durations", durationVals);
 
         // Assemble the compound NBT tree for the configuration
         CompoundNBT config = new CompoundNBT();
@@ -116,13 +105,20 @@ public class SequencerConfig {
         return config;
     }
 
-
     public SequenceDefinition getSequence(int index) {
-        if (index < 0 || index >= sequenceDefinition.size()) {
+        if (index < 0 || index >= SEQUENCE_COUNT) {
             LOGGER.error("Invalid sequence index");
             return null;
         }
         return sequenceDefinition.get(index);
+    }
+
+    public void setSequenceDefinition(int index, SequenceDefinition s) {
+        if (index < 0 || index >= SEQUENCE_COUNT) {
+            LOGGER.error("Attempted to set a sequence outside bounds");
+            return;
+        }
+        sequenceDefinition.set(index, s);
     }
 
     public int getSideColorIndex(String side) {
@@ -130,5 +126,27 @@ public class SequencerConfig {
             return sideMap.get(side).getIndex();
         }
         return SideColor.OFF.getIndex();
+    }
+
+    public void setSideColorIndex(String side, int index) {
+        if (sideMap.containsKey(side)) {
+            sideMap.put(side, SideColor.getByIndex(index));
+            }
+        }
+
+    public SequencerMode getMode() {
+        return mode;
+    }
+
+    public void setMode(SequencerMode mode) {
+        this.mode = mode;
+    }
+
+    public long getThreshold() {
+        return triggerLevel;
+    }
+
+    public void setThreshold(long threshold) {
+        triggerLevel = threshold;
     }
 }

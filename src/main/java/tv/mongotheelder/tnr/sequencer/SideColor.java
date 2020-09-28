@@ -8,8 +8,7 @@ public enum SideColor implements IStringSerializable {
     GREEN("green", 2),
     YELLOW("yellow", 3),
     BLACK("black", 4),
-    ORANGE("orange", 5)
-    ;
+    ORANGE("orange", 5);
 
     private final int index;
     private final String name;
@@ -31,6 +30,13 @@ public enum SideColor implements IStringSerializable {
     public static SideColor getByName(String name) {
         for(SideColor sc: SideColor.values()) {
             if (sc.getName().equals(name)) return sc;
+        }
+        return null;
+    }
+
+    public static SideColor getByIndex(int index) {
+        for(SideColor sc: SideColor.values()) {
+            if (sc.getIndex() == index) return sc;
         }
         return null;
     }

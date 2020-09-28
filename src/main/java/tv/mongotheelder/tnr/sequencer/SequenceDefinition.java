@@ -1,27 +1,27 @@
 package tv.mongotheelder.tnr.sequencer;
 
 public class SequenceDefinition {
-    private int delay;
-    private int duration;
+    private long delay;
+    private long duration;
 
-    public SequenceDefinition(int delay, int duration) {
+    public SequenceDefinition(long delay, long duration) {
         this.delay = delay;
         this.duration = duration;
     }
 
-    public int getDelay() {
+    public long getDelay() {
         return delay;
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDelay(int delay) {
+    public void setDelay(long delay) {
         this.delay = delay;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

@@ -2,117 +2,154 @@ package tv.mongotheelder.tnr.sequencer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.gui.widget.button.ImageButton;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
-import tv.mongotheelder.tnr.gui.ColorSelectionWidget;
 
-import java.util.HashMap;
-import java.util.Map;
+public class SequencerScreen extends AbstractFancyScreen {
+    private static final int GUI_WIDTH = 160;
+    private static final int GUI_HEIGHT = 171;
 
-@OnlyIn(Dist.CLIENT)
-public class SequencerScreen extends Screen {
-    private static int GUI_WIDTH = 161;
-    private static int GUI_HEIGHT = 157;
-    private static int BUTTON_SIZE = 16;
-    private static int BUTTON_TOP = 10;
-    private static int BUTTON_LEFT = 10;
-    private static int GAP = 2;
-    private static final ResourceLocation COLOR_SELECTION_TEXTURE = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/side_buttons.png");
-    private static final ResourceLocation TRIGGER_BUTTON_TEXTURE = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/trigger_button.png");
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/sequencer_gui.png");
+    private static final int ROW_COUNT = 5;
+    private static final int SIDE_BUTTON_X = 6;
+    private static final int TIME_ENTRY_X = 25;
+    private static final int TIME_ENTRY_Y = 4;
+    private static final int ENTRY_WIDTH = 56;
+    private static final int ENTRY_HEIGHT = 16;
+    private static final int GAP = 2;
+    private static final int BUTTON_SIZE = 16;
+    private static final int SLIDER_HEIGHT = 20;
 
+    private static final int CONTROL_GROUP_Y = TIME_ENTRY_Y +(ENTRY_HEIGHT+GAP)*ROW_COUNT+11;
+    private final SideSelectionButton[] sides = new SideSelectionButton[SequencerConfig.SEQUENCE_COUNT];
+    private final TriggerModeButton[] trigger = new TriggerModeButton[SequencerMode.values().length];
     private SequencerTile tileEntity;
-    private SequencerConfig config;
-    private Map<String, Button> sides = new HashMap<>();
+    private SequencerConfig blockConfig;
+    private IntegerRangeSlider slider;
+    private TextFieldWidget[] delays = new TextFieldWidget[SequencerConfig.SEQUENCE_COUNT];
+    private TextFieldWidget[] durations = new TextFieldWidget[SequencerConfig.SEQUENCE_COUNT];
 
-    private static final Logger LOGGER = LogManager.getLogger();
-
-    public SequencerScreen(SequencerTile tileEntity) {
-        super(new TranslationTextComponent("gui.redstonesequencer.sequencer.title"));
+    public SequencerScreen(ITextComponent titleIn, SequencerTile tileEntity) {
+        super(titleIn);
+        xSize = GUI_WIDTH;
+        ySize = GUI_HEIGHT;
         this.tileEntity = tileEntity;
-        if (tileEntity != null) {
-            config = tileEntity.getConfig();
-        }
-        else {
-            LOGGER.error("Attempted to create a Sequencer Screen with no associated tile entity");
-        }
-        setSize(GUI_WIDTH, GUI_HEIGHT);
-
-        placeSideButtons();
-        placeSequenceList();
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground();
-        this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
+    protected void init() {
+        super.init();
+        blockConfig = tileEntity.getConfig();
+
+        placeTextFields();
+        placeSideButtons();
+        placeTriggerButtons();
+        placeThresholdSlider();
+    }
+
+    private String getTranslatedString(String item) {
+        return new TranslationTextComponent("gui.tnr.sequencer."+item).getFormattedText();
+    }
+
+    @Override
+    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int relX = (this.width - GUI_WIDTH) / 2;
-        int relY = (this.height - GUI_HEIGHT) / 2;
-        this.blit(relX, relY, 0, 0, GUI_WIDTH, GUI_HEIGHT);
-        Minecraft.getInstance().fontRenderer.drawString("Delay", 12, 12, 0xff0000);
-        Minecraft.getInstance().fontRenderer.drawString("Duration", 40, 12, 0xff0000);
-
-        super.render(mouseX, mouseY, partialTicks);
+        this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.SEQUENCER_GUI_PATH);
+        int relX = (this.width - this.xSize) / 2;
+        int relY = (this.height - this.ySize) / 2;
+        this.blit(relX, relY, 0, 0, this.xSize, this.ySize);
     }
 
-    private void placeSideButtons() {
-        sides.put("top", newSideButton(0, 1, "top"));
-        sides.put("left", newSideButton(1, 0, "left"));
-        sides.put("right", newSideButton(1, 2, "right"));
-        sides.put("bottom", newSideButton(2, 1, "bottom"));
-        sides.put("back", newSideButton(2, 2, "back"));
-        sides.put("trigger", newTriggerButton(1, 1));
-        for (String key:sides.keySet()) {
-            addButton(sides.get(key));
-        }
+    @Override
+    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+        RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
+        this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.SEQUENCER_GUI_PATH);
+        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("delay"), TIME_ENTRY_X, TIME_ENTRY_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("duration"), TIME_ENTRY_X +ENTRY_WIDTH+GAP, TIME_ENTRY_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("trigger"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("threshold"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y+BUTTON_SIZE+GAP+13, 0x000000);
     }
 
-    private ColorSelectionWidget newSideButton(int row, int col, String side) {
-        int state = config.getSideColorIndex(side);
-        ColorSelectionWidget widget = new ColorSelectionWidget(BUTTON_TOP+(BUTTON_SIZE +GAP)*row, BUTTON_LEFT+(BUTTON_SIZE +GAP)*col, BUTTON_SIZE, BUTTON_SIZE, 6, side, state, new sidePressed());
-        widget.initTextureValues(0, 0, BUTTON_SIZE, BUTTON_SIZE, COLOR_SELECTION_TEXTURE);
+    private TextFieldWidget textField(FontRenderer fr, int row, int col, long value) {
+        TextFieldWidget widget = new TextFieldWidget(fr, getGuiLeft()+ TIME_ENTRY_X +(ENTRY_WIDTH+GAP)*col, getGuiTop()+ TIME_ENTRY_Y +9+(ENTRY_HEIGHT+GAP)*row, ENTRY_WIDTH, ENTRY_HEIGHT, "");
+        widget.setText(Long.toString(value));
+        addButton(widget);
         return widget;
     }
 
-    private ImageButton newTriggerButton(int row, int col) {
-        ImageButton button = new ImageButton(BUTTON_TOP+(BUTTON_SIZE+GAP)*row, BUTTON_LEFT+(BUTTON_SIZE+GAP)*col, BUTTON_SIZE, BUTTON_SIZE, 0, 0, BUTTON_SIZE, TRIGGER_BUTTON_TEXTURE, new triggerPressed());
-        return button;
-    }
+    private void placeTextFields() {
+        FontRenderer fr = Minecraft.getInstance().fontRenderer;
 
-    private void placeSequenceList() {
-
-    }
-
-    private void showTriggerGUI() {
-
-    }
-
-    private void advanceSide(Button button) {
-        String label = button.getMessage();
-        ColorSelectionWidget widget = (ColorSelectionWidget) sides.get(label);
-        widget.advanceState();
-    }
-
-    class triggerPressed implements Button.IPressable {
-        @Override
-        public void onPress(Button button) {
-            showTriggerGUI();
+        for(int row = 0; row < SequencerConfig.SEQUENCE_COUNT; row++) {
+            delays[row] = textField(fr, row, 0, blockConfig.getSequence(row).getDelay());
+            durations[row] = textField(fr, row, 1, blockConfig.getSequence(row).getDuration());
         }
     }
-    class sidePressed implements Button.IPressable {
+
+    private void placeSideButtons() {
+        sides[0] = new SideSelectionButton(getGuiLeft()+ SIDE_BUTTON_X +BUTTON_SIZE+GAP, getGuiTop()+CONTROL_GROUP_Y, BUTTON_SIZE, BUTTON_SIZE, SequencerConfig.COLOR_COUNT, "top", blockConfig.getSideColorIndex("top"), new AdvanceButtonColor());
+        sides[1] = new SideSelectionButton(getGuiLeft()+ SIDE_BUTTON_X, getGuiTop()+CONTROL_GROUP_Y+BUTTON_SIZE+GAP, BUTTON_SIZE, BUTTON_SIZE, SequencerConfig.COLOR_COUNT, "left", blockConfig.getSideColorIndex("left"), new AdvanceButtonColor());
+        sides[2] = new SideSelectionButton(getGuiLeft()+ SIDE_BUTTON_X +(BUTTON_SIZE+GAP)*2, getGuiTop()+CONTROL_GROUP_Y+BUTTON_SIZE+GAP, BUTTON_SIZE, BUTTON_SIZE, SequencerConfig.COLOR_COUNT, "right", blockConfig.getSideColorIndex("right"), new AdvanceButtonColor());
+        sides[3] = new SideSelectionButton(getGuiLeft()+ SIDE_BUTTON_X +BUTTON_SIZE+GAP, getGuiTop()+CONTROL_GROUP_Y+(BUTTON_SIZE+GAP)*2, BUTTON_SIZE, BUTTON_SIZE, SequencerConfig.COLOR_COUNT, "bottom", blockConfig.getSideColorIndex("bottom"), new AdvanceButtonColor());
+        sides[4] = new SideSelectionButton(getGuiLeft()+ SIDE_BUTTON_X +(BUTTON_SIZE+GAP)*2, getGuiTop()+CONTROL_GROUP_Y+(BUTTON_SIZE+GAP)*2, BUTTON_SIZE, BUTTON_SIZE, SequencerConfig.COLOR_COUNT, "back", blockConfig.getSideColorIndex("back"), new AdvanceButtonColor());
+        for (SideSelectionButton widget: sides) {
+            widget.initTextureValues(0, 0, 16, 16, TotallyNotRedstone.GUI_BUTTONS_PATH);
+            addButton(widget);
+        }
+    }
+
+    private void placeTriggerButtons() {
+        for (int i = 0; i < 5; i++) {
+            trigger[i] = new TriggerModeButton(getGuiLeft()+ SIDE_BUTTON_X +ENTRY_WIDTH+GAP+(BUTTON_SIZE+GAP)*i, getGuiTop()+CONTROL_GROUP_Y+GAP+10, BUTTON_SIZE, BUTTON_SIZE, SequencerMode.getByIndex(i), blockConfig.getMode(), new SequencerScreen.SetTriggerMode());
+            trigger[i].initTextureValues(0, (i+1)*32, 16, 16, TotallyNotRedstone.GUI_BUTTONS_PATH);
+            addButton(trigger[i]);
+        }
+    }
+
+    private  void placeThresholdSlider() {
+        slider = new IntegerRangeSlider(getGuiLeft()+SIDE_BUTTON_X+ENTRY_WIDTH+GAP, getGuiTop()+CONTROL_GROUP_Y+BUTTON_SIZE+GAP+23, (BUTTON_SIZE+GAP)*5-GAP, SLIDER_HEIGHT, 0, 14, blockConfig.getThreshold());
+        addButton(slider);
+    }
+
+    static class AdvanceButtonColor implements Button.IPressable {
         @Override
         public void onPress(Button button) {
-            advanceSide(button);
+            ((SideSelectionButton) button).advanceState();
         }
+    }
+
+    class SetTriggerMode implements TriggerModeButton.IPressable {
+        @Override
+        public void onPress(TriggerModeButton button) {
+            for(TriggerModeButton b: trigger) {
+                b.setStateTriggered(b.mode == button.mode);
+            }
+        }
+    }
+
+    @Override
+    public void onClose() {
+        updateConfig();
+        super.onClose();
+    }
+
+    private void updateConfig() {
+        SequencerConfig newConfig = new SequencerConfig();
+        for (TriggerModeButton b: trigger) {
+            if (b.stateTriggered) newConfig.setMode(b.mode);
+        }
+        newConfig.setThreshold(slider.getCurrentValue());
+        for (SideSelectionButton side: sides) {
+            newConfig.setSideColorIndex(side.getMessage(), side.getState());
+        }
+        for (int row = 0; row < SequencerConfig.SEQUENCE_COUNT; row++) {
+            SequenceDefinition s = new SequenceDefinition(Long.parseLong(delays[row].getText()), Long.parseLong(durations[row].getText()));
+            newConfig.setSequenceDefinition(row, s);
+        }
+        tileEntity.setConfig(newConfig);
     }
 
 }

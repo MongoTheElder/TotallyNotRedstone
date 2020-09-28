@@ -2,6 +2,10 @@
   "block.tnr.sequencer": "Redstone Sequencer",
   "item.tnr.sequencer": "Redstone Sequencer",
   "gui.tnr.sequencer.title": "Redstone Sequencer",
+  "gui.tnr.sequencer.delay": "Delay",
+  "gui.tnr.sequencer.duration": "Duration",
+  "gui.tnr.sequencer.trigger": "Trigger Mode",
+  "gui.tnr.sequencer.threshold": "Threshold",
 
   "block.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
   "item.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",

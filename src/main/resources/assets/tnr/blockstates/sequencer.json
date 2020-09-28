@@ -1,7 +1,8 @@
 {
   "variants": {
-    "": {
-      "model": "tnr:block/sequencer"
-    }
+    "facing=south": {"model": "tnr:block/sequencer" },
+    "facing=north": {"model": "tnr:block/sequencer", "y": 180 },
+    "facing=west": {"model": "tnr:block/sequencer", "y": 90 },
+    "facing=east": {"model": "tnr:block/sequencer", "y": 270 }
   }
 }

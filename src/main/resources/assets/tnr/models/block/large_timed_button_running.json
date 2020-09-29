@@ -1,0 +1,6 @@
+{
+  "parent": "tnr:block/large_timed_button",
+  "textures": {
+    "indicator": "tnr:block/button_running"
+  }
+}

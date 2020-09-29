@@ -1,0 +1,6 @@
+{
+  "parent": "tnr:block/small_timed_button",
+  "textures": {
+    "indicator": "tnr:block/button_off"
+  }
+}

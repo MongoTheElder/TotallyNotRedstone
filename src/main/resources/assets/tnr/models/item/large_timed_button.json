@@ -1,0 +1,24 @@
+{
+  "parent": "tnr:block/large_timed_button_on",
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [ -90, 0, 0 ],
+      "translation": [ 0, 1, -3 ],
+      "scale": [ 0.55, 0.55, 0.55 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 0, -135, 25 ],
+      "translation": [ 0, 4, 2 ],
+      "scale": [ 1.7, 1.7, 1.7 ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [ 0, -135, 25 ],
+      "translation": [ 0, 4, 2 ],
+      "scale": [ 1.7, 1.7, 1.7 ]
+    },
+    "gui":{
+      "rotation": [75, 0, 0],
+      "translation": [0, 2, 0]
+    }
+  }
+}

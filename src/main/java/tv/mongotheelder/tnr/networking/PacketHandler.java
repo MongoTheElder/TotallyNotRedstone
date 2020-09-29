@@ -1,10 +1,7 @@
 package tv.mongotheelder.tnr.networking;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -14,6 +11,7 @@ import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
+import tv.mongotheelder.tnr.buttons.TimedButtonTile;
 import tv.mongotheelder.tnr.sequencer.SequencerTile;
 
 import java.util.function.BiConsumer;
@@ -40,6 +38,8 @@ public class PacketHandler {
         registerMessage(SequencerOpenGUIPacket.class, SequencerOpenGUIPacket::encode, SequencerOpenGUIPacket::decode, SequencerOpenGUIPacket.Handler::handle);
         registerMessage(KeypadSetCodePacket.class, KeypadSetCodePacket::encode, KeypadSetCodePacket::decode, KeypadSetCodePacket.Handler::handle);
         registerMessage(KeypadSetStatePacket.class, KeypadSetStatePacket::encode, KeypadSetStatePacket::decode, KeypadSetStatePacket.Handler::handle);
+        registerMessage(TimedButtonNBTPacket.class, TimedButtonNBTPacket::encode, TimedButtonNBTPacket::decode, TimedButtonNBTPacket.Handler::handle);
+        registerMessage(TimedButtonOpenGUIPacket.class, TimedButtonOpenGUIPacket::encode, TimedButtonOpenGUIPacket::decode, TimedButtonOpenGUIPacket.Handler::handle);
     }
 
     public static void sendToServer(Object msg) {
@@ -57,15 +57,27 @@ public class PacketHandler {
     }
 
     public static void sendSequencerNBT(SequencerTile te, CompoundNBT config) {
-        // Send config string to the server
+
         if (te != null && te.getWorld() != null && te.getWorld().isRemote) {
             SequencerUpdateNBTPacket msg = new SequencerUpdateNBTPacket(te.getPos(), config);
             PacketHandler.sendToServer(msg);
         }
     }
 
+    public static void sendTimedButtonNBT(TimedButtonTile te, CompoundNBT config) {
+        if (te != null && te.getWorld() != null && te.getWorld().isRemote) {
+            TimedButtonNBTPacket msg = new TimedButtonNBTPacket(te.getPos(), config);
+            PacketHandler.sendToServer(msg);
+        }
+    }
+
     public static void sendSequencerOpenGUI(BlockPos pos, ServerPlayerEntity player) {
         SequencerOpenGUIPacket msg = new SequencerOpenGUIPacket(pos);
+        PacketHandler.sendToPlayer(msg, player);
+    }
+
+    public static void sendTimedButtonOpenGUI(BlockPos pos, ServerPlayerEntity player) {
+        TimedButtonOpenGUIPacket msg = new TimedButtonOpenGUIPacket(pos);
         PacketHandler.sendToPlayer(msg, player);
     }
 

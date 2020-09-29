@@ -1,17 +1,17 @@
 {
   "keypad_error": {
     "category": "block",
-    "subtitle": "subtitle.redstonesequencer.keypad_error",
+    "subtitle": "subtitle.tnr.keypad.error",
     "sounds": ["tnr:buzz"]
   },
   "timed_button_beep": {
     "category": "block",
-    "subtitle": "subtitle.redstonesequencer.timed_button_beep",
+    "subtitle": "subtitle.tnr.timed_buttons.beep",
     "sounds": ["tnr:beep"]
   },
   "timed_button_long_beep": {
     "category": "block",
-    "subtitle": "subtitle.redstonesequencer.timed_button_long_beep",
+    "subtitle": "subtitle.tnr.timed_buttons.long_beep",
     "sounds": ["tnr:long_beep"]
   }
 

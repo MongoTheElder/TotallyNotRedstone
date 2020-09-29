@@ -12,10 +12,13 @@
 
   "gui.tnr.keypad.locked": "Locked",
   "gui.tnr.keypad.unlocked": "Unlocked",
+  "subtitle.tnr.keypad.error": "An annoying buzz indicating an error",
 
-  "subtitle.tnr.keypad_error": "An annoying buzz indicating an error",
-  "subtitle.tnr.timed_button_beep": "BEEP",
-  "subtitle.tnr.timed_button_long_beep": "BEEEEEEP",
+  "block.tnr.timed_button": "Timed Button",
+  "gui.tnr.timed_buttons.pulse_count": "Pulse Count",
+  "gui.tnr.timed_buttons.enable_sound": "Sounds",
+  "subtitle.tnr.timed_buttons.beep": "BEEP",
+  "subtitle.tnr.timed_buttons.long_beep": "BEEEEEEP",
 
   "_comment": "Creative Tabs",
   "itemGroup.tnr": "Totally Not Redstone"

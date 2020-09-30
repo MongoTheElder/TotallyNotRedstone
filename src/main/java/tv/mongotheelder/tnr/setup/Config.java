@@ -7,12 +7,16 @@ public class Config {
     public static final String CATEGORY_BUTTON = "timed_buttons";
     public static final String CATEGORY_KEYPAD = "keypad";
     public static final String CATEGORY_WIRELESS_REDSTONE_RECEIVER = "wireless_redstone_receiver";
+    public static final String CATEGORY_WIRELESS_REDSTONE_INDICATOR = "wireless_redstone_indicator";
     public static final String CATEGORY_UTILITY = "utility_items";
 
     public static ForgeConfigSpec COMMON_CONFIG;
 
     public static ForgeConfigSpec.BooleanValue ENABLE_SEQUENCER_BLOCKS;
     public static ForgeConfigSpec.IntValue WIRELESS_REDSTONE_RECEIVER_TICK;
+    public static ForgeConfigSpec.BooleanValue WIRELESS_REDSTONE_RECEIVER_UNBREAKABLE;
+    public static ForgeConfigSpec.IntValue WIRELESS_REDSTONE_INDICATOR_TICK;
+    public static ForgeConfigSpec.BooleanValue WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE;
 
     public static ForgeConfigSpec.BooleanValue ENABLE_TIMED_BUTTONS;
     public static ForgeConfigSpec.BooleanValue TIMED_BUTTONS_UNBREAKABLE;
@@ -57,6 +61,11 @@ public class Config {
 
         COMMON_BUILDER.pop().push(CATEGORY_WIRELESS_REDSTONE_RECEIVER);
         WIRELESS_REDSTONE_RECEIVER_TICK = COMMON_BUILDER.comment(" Number of game ticks between redstone receiver updates").defineInRange("wireless_redstone_receiver_tick", 4, 1, 20);
+        WIRELESS_REDSTONE_RECEIVER_UNBREAKABLE = COMMON_BUILDER.comment(" Make wireless redstone receivers unbreakable").define("redstone_receivers_unbreakable", true);
+
+        COMMON_BUILDER.pop().push(CATEGORY_WIRELESS_REDSTONE_INDICATOR);
+        WIRELESS_REDSTONE_INDICATOR_TICK = COMMON_BUILDER.comment(" Number of game ticks between redstone indicator updates").defineInRange("wireless_redstone_indicator_tick", 4, 1, 20);
+        WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE = COMMON_BUILDER.comment(" Make wireless redstone indicators unbreakable").define("redstone_indicators_unbreakable", true);
 
         COMMON_BUILDER.pop().push(CATEGORY_UTILITY);
         ENABLE_PROGRAMMER = COMMON_BUILDER.comment(" Enable Programmer").define("enable_programmer", true);

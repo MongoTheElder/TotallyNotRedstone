@@ -19,7 +19,7 @@ public class TotallyNotRedstone {
     public static final String TIMED_BUTTON_PULSE_COUNT_KEY = "gui.tnr.timed_buttons.pulse_count";
     public static final String TIMED_BUTTON_ENABLE_SOUND_KEY = "gui.tnr.timed_buttons.enable_sound";
     public static final String TIMED_BUTTONS_TAG = "timed_buttons";
-    public static final String WIRELESS_REDSTONE_RECEIVER_TAG = "wireless_redstone_receiver";
+    public static final String WIRELESS_REDSTONE_SOURCE_POS_TAG = "wireless_redstone_source_pos";
     public static final String KEYPAD_CODE_TAG = "keypad";
     public static final String LOCKED_KEY = "gui.tnr.keypad.locked";
     public static final String UNLOCKED_KEY = "gui.tnr.keypad.unlocked";

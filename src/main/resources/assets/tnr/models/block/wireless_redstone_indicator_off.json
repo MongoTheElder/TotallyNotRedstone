@@ -1,0 +1,6 @@
+{
+  "textures": {
+    "indicator": "tnr:block/solid_colors/dark_red"
+  },
+  "parent": "tnr:block/wireless_redstone_indicator"
+}

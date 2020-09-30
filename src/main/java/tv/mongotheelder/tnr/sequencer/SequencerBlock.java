@@ -49,7 +49,7 @@ public class SequencerBlock extends HorizontalFacingBlock {
                 return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

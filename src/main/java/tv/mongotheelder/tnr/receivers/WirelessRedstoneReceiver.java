@@ -1,4 +1,4 @@
-package tv.mongotheelder.tnr.wireless;
+package tv.mongotheelder.tnr.receivers;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

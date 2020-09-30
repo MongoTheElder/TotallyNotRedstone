@@ -1,0 +1,15 @@
+{
+  "elements": [
+    {
+      "from": [ 7, 7, 0.0 ],
+      "to": [ 9, 9, 0.25 ],
+      "faces": {
+        "up":  { "texture": "#indicator", "uv": [0, 0, 1, 1] },
+        "down":  { "texture": "#indicator", "uv": [0, 0, 1, 1] },
+        "south": {  "texture": "#indicator", "uv": [0, 0, 1, 1] },
+        "west":  { "texture": "#indicator", "uv": [0, 0, 1, 1] },
+        "east":  {  "texture": "#indicator", "uv": [0, 0, 1, 1] }
+      }
+    }
+  ]
+}

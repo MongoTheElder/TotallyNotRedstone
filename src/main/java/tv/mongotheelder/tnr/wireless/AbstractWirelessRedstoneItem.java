@@ -4,10 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
+import net.minecraft.item.*;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
@@ -24,18 +21,21 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class WirelessRedstoneReceiverItem extends BlockItem {
+public abstract class AbstractWirelessRedstoneItem extends BlockItem {
+    protected BlockPos targetPos;
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private BlockPos targetPos;
-
-    public WirelessRedstoneReceiverItem(Block blockIn, Properties builder) {
+    public AbstractWirelessRedstoneItem(Block blockIn, Item.Properties builder) {
         super(blockIn, builder);
     }
 
     public ActionResultType onItemUse(ItemUseContext context) {
+        if (context.getPlayer() == null) {
+            LOGGER.error("Attempted to use an item with a null player");
+            return ActionResultType.FAIL;
+        }
         if (context.getPlayer().isCrouching()) {
-            if (WirelessRedstoneReceiverTile.isValidSourceBlock(context.getWorld(), context.getPos())) {
+            if (isValidSourceBlock(context.getWorld(), context.getPos())) {
                 targetPos = context.getPos();
             }
             return ActionResultType.SUCCESS;
@@ -45,36 +45,13 @@ public class WirelessRedstoneReceiverItem extends BlockItem {
         }
     }
 
-    @Override
-    public ActionResultType tryPlace(BlockItemUseContext context) {
-        if (targetPos == null || !WirelessRedstoneReceiverTile.isValidSourceBlock(context.getWorld(), targetPos))
-            return ActionResultType.FAIL;
-        return super.tryPlace(context);
-    }
-
-    @Override
-    protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
-        MinecraftServer minecraftserver = worldIn.getServer();
-        if (minecraftserver != null && player != null) {
-            //CompoundNBT nbt = stack.getOrCreateTag();
-            //BlockPos blockPos = nbt.contains(JunkDrawer.WIRELESS_REDSTONE_RECEIVER_TAG) ? NBTUtil.readBlockPos(nbt.getCompound(JunkDrawer.WIRELESS_REDSTONE_RECEIVER_TAG)) : new BlockPos(0, 0, 0);
-            WirelessRedstoneReceiverTile tileEntity = (WirelessRedstoneReceiverTile) worldIn.getTileEntity(pos);
-            if (tileEntity != null) {
-                tileEntity.setSourcePos(targetPos);
-            } else {
-                LOGGER.error(String.format("Could not locate the tile entity for block at (%d %d %d)", pos.getX(), pos.getY(), pos.getZ()));
-            }
-        }
-        return super.onBlockPlaced(pos, worldIn, player, stack, state);
-    }
-
     /**
      * allows items to add custom lines of information to the mouseover description
      */
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if (targetPos != null && WirelessRedstoneReceiverTile.isValidSourceBlock(worldIn, targetPos)) {
+        if (targetPos != null && isValidSourceBlock(worldIn, targetPos)) {
             String blockType = worldIn.getBlockState(targetPos).getBlock().getTranslationKey();
             TranslationTextComponent blockName = new TranslationTextComponent(blockType);
             String newTip = String.format("Linked to %s at %d %d %d", blockName.getUnformattedComponentText(), targetPos.getX(), targetPos.getY(), targetPos.getZ());
@@ -84,4 +61,30 @@ public class WirelessRedstoneReceiverItem extends BlockItem {
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
+
+    @Override
+    public ActionResultType tryPlace(BlockItemUseContext context) {
+        if (targetPos == null || !isValidSourceBlock(context.getWorld(), targetPos))
+            return ActionResultType.FAIL;
+        return super.tryPlace(context);
+    }
+
+    protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state) {
+        MinecraftServer minecraftserver = worldIn.getServer();
+        if (minecraftserver != null && player != null) {
+            AbstractWirelessRedstoneTile tileEntity = (AbstractWirelessRedstoneTile) worldIn.getTileEntity(pos);
+            if (tileEntity != null) {
+                tileEntity.setSourcePos(targetPos);
+                return true;
+            } else {
+                LOGGER.error(String.format("Could not locate the tile entity for block at (%d %d %d)", pos.getX(), pos.getY(), pos.getZ()));
+                return false;
+            }
+        }
+        return super.onBlockPlaced(pos, worldIn, player, stack, state);
+    }
+
+    // Is the target block at pos a valid redstone signal source
+    abstract public boolean isValidSourceBlock(World world, BlockPos pos);
+
 }

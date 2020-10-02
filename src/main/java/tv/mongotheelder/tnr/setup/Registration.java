@@ -1,5 +1,6 @@
 package tv.mongotheelder.tnr.setup;
 
+import com.mojang.authlib.yggdrasil.response.HasJoinedMinecraftServerResponse;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -26,11 +27,17 @@ import tv.mongotheelder.tnr.indicators.WirelessRedstoneIndicatorTile;
 import tv.mongotheelder.tnr.keypad.Keypad;
 import tv.mongotheelder.tnr.keypad.KeypadContainer;
 import tv.mongotheelder.tnr.keypad.KeypadTile;
+import tv.mongotheelder.tnr.misc.SolidColors;
 import tv.mongotheelder.tnr.sequencer.SequencerBlock;
 import tv.mongotheelder.tnr.sequencer.SequencerTile;
 import tv.mongotheelder.tnr.receivers.WirelessRedstoneReceiver;
 import tv.mongotheelder.tnr.receivers.WirelessRedstoneReceiverItem;
 import tv.mongotheelder.tnr.receivers.WirelessRedstoneReceiverTile;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static tv.mongotheelder.tnr.TotallyNotRedstone.MODID;
 import static tv.mongotheelder.tnr.setup.ModSetup.ITEM_GROUP;
@@ -42,7 +49,11 @@ public class Registration {
     private static final DeferredRegister<TileEntityType<?>> TILES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, MODID);
     private static final DeferredRegister<ContainerType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
+    public static Map<String, RegistryObject<WirelessRedstoneIndicator>> WIRELESS_REDSTONE_INDICATOR_BLOCKS = new HashMap<>();
+    public static Map<String, RegistryObject<WirelessRedstoneIndicatorItem>> WIRELESS_REDSTONE_INDICATOR_ITEMS = new HashMap<>();
+
     public static void init() {
+        generateWirelessRedstoneIndicators();
         BLOCKS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         SOUNDS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -79,14 +90,33 @@ public class Registration {
     public static final RegistryObject<TileEntityType<WirelessRedstoneReceiverTile>> WIRELESS_REDSTONE_RECEIVER_TILE = TILES.register("wireless_redstone_receiver", () -> TileEntityType.Builder.create(WirelessRedstoneReceiverTile::new, WIRELESS_REDSTONE_RECEIVER_BLOCK.get()).build(null));
 
     // Wireless Indicator
-    public static final RegistryObject<WirelessRedstoneIndicator> WIRELESS_REDSTONE_INDICATOR_BLOCK = BLOCKS.register("wireless_redstone_indicator", () -> new WirelessRedstoneIndicator(Block.Properties.create(Material.IRON).hardnessAndResistance(hardness(Config.WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE, 1.2F)).sound(SoundType.METAL)));
-    public static final RegistryObject<WirelessRedstoneIndicatorItem> WIRELESS_REDSTONE_INDICATOR_ITEM = ITEMS.register("wireless_redstone_indicator", () -> new WirelessRedstoneIndicatorItem(WIRELESS_REDSTONE_INDICATOR_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
-    public static final RegistryObject<TileEntityType<WirelessRedstoneIndicatorTile>> WIRELESS_REDSTONE_INDICATOR_TILE = TILES.register("wireless_redstone_indicator", () -> TileEntityType.Builder.create(WirelessRedstoneIndicatorTile::new, WIRELESS_REDSTONE_INDICATOR_BLOCK.get()).build(null));
+    //public static final RegistryObject<WirelessRedstoneIndicator> WIRELESS_REDSTONE_INDICATOR_BLOCK = BLOCKS.register("wireless_redstone_indicator", () -> new WirelessRedstoneIndicator(Block.Properties.create(Material.IRON).hardnessAndResistance(hardness(Config.WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE, 1.2F)).sound(SoundType.METAL)));
+    //public static final RegistryObject<WirelessRedstoneIndicatorItem> WIRELESS_REDSTONE_INDICATOR_ITEM = ITEMS.register("wireless_redstone_indicator", () -> new WirelessRedstoneIndicatorItem(WIRELESS_REDSTONE_INDICATOR_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
+    public static RegistryObject<TileEntityType<WirelessRedstoneIndicatorTile>> WIRELESS_REDSTONE_INDICATOR_TILE;
 
     // Utility
     public static final RegistryObject<Item> PROGRAMMER_ITEM = ITEMS.register("programmer", () -> new Item(new Item.Properties().group(ITEM_GROUP)));
 
     private static float hardness(ForgeConfigSpec.BooleanValue key, float hardnessValue) {
         return key.get() ? -1.0f:hardnessValue;
+    }
+
+    private static void generateWirelessRedstoneIndicators() {
+        for (SolidColors color : SolidColors.values()) {
+            String colorName = color.name().toLowerCase();
+            RegistryObject<WirelessRedstoneIndicator> block = BLOCKS.register("wireless_redstone_indicator_" + colorName, () -> new WirelessRedstoneIndicator(Block.Properties.create(Material.IRON).hardnessAndResistance(hardness(Config.WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE, 1.2F)).sound(SoundType.METAL)));
+            WIRELESS_REDSTONE_INDICATOR_BLOCKS.put(colorName, block);
+            WIRELESS_REDSTONE_INDICATOR_ITEMS.put(colorName, ITEMS.register("wireless_redstone_indicator_"+colorName, () -> new WirelessRedstoneIndicatorItem(block.get(), new Item.Properties().group(ITEM_GROUP))));
+        }
+        WIRELESS_REDSTONE_INDICATOR_TILE = TILES.register("wireless_redstone_indicator", () -> TileEntityType.Builder.create(WirelessRedstoneIndicatorTile::new, getWirelessRedstoneIndicatorBlocks()).build(null));
+    }
+
+    private static Block[] getWirelessRedstoneIndicatorBlocks() {
+        Block[] blocks = new Block[SolidColors.values().length];
+        int i = 0;
+        for (RegistryObject<WirelessRedstoneIndicator> block: WIRELESS_REDSTONE_INDICATOR_BLOCKS.values()) {
+            blocks[i++] = block.get();
+        }
+        return blocks;
     }
 }

@@ -19,8 +19,8 @@ public class Generator {
     }
 
     private static void registerServerProviders(DataGenerator generator) {
-        //generator.addProvider(new GeneratorLoot(generator));
-        //generator.addProvider(new GeneratorRecipes(generator));
+        generator.addProvider(new GeneratorLoot(generator));
+        generator.addProvider(new GeneratorRecipes(generator));
     }
 
     private static void registerClientProviders(DataGenerator generator, GatherDataEvent event) {

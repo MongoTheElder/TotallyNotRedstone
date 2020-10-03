@@ -12,7 +12,7 @@ import net.minecraft.world.IBlockReader;
 import javax.annotation.Nonnull;
 
 public class SmallTimedButton extends TimedButton {
-    private static final AxisAlignedBB SHAPE = new AxisAlignedBB(6, 6, 0, 12, 10, 2);
+    private static final AxisAlignedBB SHAPE = new AxisAlignedBB(6, 6, 0, 10, 10, 2);
 
     public SmallTimedButton(Block.Properties properties) {
         super(properties);

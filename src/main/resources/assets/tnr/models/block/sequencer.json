@@ -1,11 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "down": "tnr:block/sequencer_down",
-    "up": "tnr:block/sequencer_up",
-    "north": "tnr:block/sequencer_north",
+    "particle": "minecraft:block/redstone_block",
+    "down": "tnr:block/sequencer",
+    "up": "tnr:block/sequencer",
+    "north": "tnr:block/sequencer",
     "south": "tnr:block/sequencer_trigger",
-    "east": "tnr:block/sequencer_east",
-    "west": "tnr:block/sequencer_west"
+    "east": "tnr:block/sequencer",
+    "west": "tnr:block/sequencer"
   }
 }

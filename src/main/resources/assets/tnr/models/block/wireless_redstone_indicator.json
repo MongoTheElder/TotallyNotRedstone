@@ -1,4 +1,7 @@
 {
+  "textures": {
+    "particle": "minecraft:/block/stone"
+  },
   "elements": [
     {
       "from": [ 7, 7, 0.0 ],

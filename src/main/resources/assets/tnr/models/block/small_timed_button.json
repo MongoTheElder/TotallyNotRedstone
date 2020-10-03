@@ -1,5 +1,6 @@
 {
   "textures": {
+    "particle": "minecraft:/block/stone",
     "base": "tnr:block/button_base"
   },
   "elements": [

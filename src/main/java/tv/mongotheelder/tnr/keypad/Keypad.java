@@ -21,6 +21,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tv.mongotheelder.tnr.misc.HorizontalFacingBlock;
+import tv.mongotheelder.tnr.setup.Config;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,6 +35,12 @@ public class Keypad extends HorizontalFacingBlock {
         super(properties);
         this.setDefaultState(this.stateContainer.getBaseState()
                 .with(BlockStateProperties.POWERED, false));
+    }
+
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+        return Config.KEYPAD_UNBREAKABLE.get() ? -1f : this.blockHardness;
     }
 
     @Override

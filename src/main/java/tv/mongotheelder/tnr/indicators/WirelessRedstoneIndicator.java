@@ -13,6 +13,7 @@ import net.minecraft.world.IBlockReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tv.mongotheelder.tnr.misc.SixWayFacingBlock;
+import tv.mongotheelder.tnr.setup.Config;
 
 import javax.annotation.Nullable;
 
@@ -34,6 +35,12 @@ public class WirelessRedstoneIndicator extends SixWayFacingBlock {
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context) {
         return rotatedShape(SHAPE, state.get(BlockStateProperties.FACE), state.get(BlockStateProperties.HORIZONTAL_FACING));
+    }
+
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+        return Config.WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE.get() ? -1f : this.blockHardness;
     }
 
     @Override

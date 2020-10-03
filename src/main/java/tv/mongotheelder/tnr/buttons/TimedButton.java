@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -18,6 +19,7 @@ import net.minecraft.world.World;
 import tv.mongotheelder.tnr.misc.SixWayFacingBlock;
 import tv.mongotheelder.tnr.networking.PacketHandler;
 import tv.mongotheelder.tnr.setup.Config;
+import tv.mongotheelder.tnr.setup.Registration;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -38,6 +40,12 @@ public class TimedButton extends SixWayFacingBlock {
         builder.add(STATE, BlockStateProperties.POWERED);
     }
 
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+        return Config.TIMED_BUTTONS_UNBREAKABLE.get() ? -1f : this.blockHardness;
+    }
+
     @Override
     public boolean hasTileEntity(BlockState state) {
         return true;
@@ -50,7 +58,7 @@ public class TimedButton extends SixWayFacingBlock {
     }
 
     private boolean shouldOpenGui(PlayerEntity player, Hand hand) {
-        return player.isCreative() || (player.isCrouching() && Config.TIMED_BUTTONS_SETTABLE_WITH_SHIFT_CLICK.get());
+        return (player.isCrouching() && player.isCreative()) || player.inventory.getCurrentItem().isItemEqual(new ItemStack(Registration.PROGRAMMER_ITEM.get())) || (player.isCrouching() && Config.TIMED_BUTTONS_SETTABLE_WITH_SHIFT_CLICK.get());
     }
 
     @Nonnull

@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import tv.mongotheelder.tnr.misc.SixWayFacingBlock;
+import tv.mongotheelder.tnr.setup.Config;
 
 import javax.annotation.Nullable;
 
@@ -49,6 +50,12 @@ public class WirelessRedstoneReceiver extends SixWayFacingBlock {
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world) {
         return new WirelessRedstoneReceiverTile();
+    }
+
+    @Deprecated
+    @SuppressWarnings("deprecation")
+    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+        return Config.WIRELESS_REDSTONE_RECEIVER_UNBREAKABLE.get() ? -1f : this.blockHardness;
     }
 
     @Override

@@ -10,6 +10,7 @@
         "up":  { "texture": "#indicator", "uv": [0, 0, 1, 1] },
         "down":  { "texture": "#indicator", "uv": [0, 0, 1, 1] },
         "south": {  "texture": "#indicator", "uv": [0, 0, 1, 1] },
+        "north": {  "texture": "#indicator", "uv": [0, 0, 1, 1] },
         "west":  { "texture": "#indicator", "uv": [0, 0, 1, 1] },
         "east":  {  "texture": "#indicator", "uv": [0, 0, 1, 1] }
       }

@@ -12,6 +12,7 @@
         "down":  { "texture": "#keypad", "uv": [1, 0, 2, 1] },
         "up":    { "texture": "#keypad", "uv": [1, 0, 2, 1] },
         "south": { "texture": "#keypad", "uv": [6, 5, 11, 11] },
+        "north": { "texture": "#keypad", "uv": [6, 5, 11, 11] },
         "west":  { "texture": "#keypad", "uv": [1, 0, 2, 1] },
         "east":  { "texture": "#keypad", "uv": [1, 0, 2, 1] }
       }

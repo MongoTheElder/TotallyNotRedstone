@@ -3,11 +3,13 @@ package tv.mongotheelder.tnr.sequencer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
+import tv.mongotheelder.tnr.misc.NumericEntryWidget;
 
 public class SequencerScreen extends AbstractFancyScreen {
     private static final int GUI_WIDTH = 160;
@@ -29,8 +31,10 @@ public class SequencerScreen extends AbstractFancyScreen {
     private SequencerTile tileEntity;
     private SequencerConfig blockConfig;
     private IntegerRangeSlider slider;
-    private TextFieldWidget[] delays = new TextFieldWidget[SequencerConfig.SEQUENCE_COUNT];
-    private TextFieldWidget[] durations = new TextFieldWidget[SequencerConfig.SEQUENCE_COUNT];
+    private NumericEntryWidget[] delays = new NumericEntryWidget[SequencerConfig.SEQUENCE_COUNT];
+    private NumericEntryWidget[] durations = new NumericEntryWidget[SequencerConfig.SEQUENCE_COUNT];
+
+    private static final Logger LOGGER = LogManager.getLogger();
 
     public SequencerScreen(ITextComponent titleIn, SequencerTile tileEntity) {
         super(titleIn);
@@ -73,9 +77,10 @@ public class SequencerScreen extends AbstractFancyScreen {
         Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("threshold"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y+BUTTON_SIZE+GAP+13, 0x000000);
     }
 
-    private TextFieldWidget textField(FontRenderer fr, int row, int col, long value) {
-        TextFieldWidget widget = new TextFieldWidget(fr, getGuiLeft()+ TIME_ENTRY_X +(ENTRY_WIDTH+GAP)*col, getGuiTop()+ TIME_ENTRY_Y +9+(ENTRY_HEIGHT+GAP)*row, ENTRY_WIDTH, ENTRY_HEIGHT, "");
+    private NumericEntryWidget textField(FontRenderer fr, int row, int col, long value) {
+        NumericEntryWidget widget = new NumericEntryWidget(fr, getGuiLeft()+ TIME_ENTRY_X +(ENTRY_WIDTH+GAP)*col, getGuiTop()+ TIME_ENTRY_Y +9+(ENTRY_HEIGHT+GAP)*row, ENTRY_WIDTH, ENTRY_HEIGHT, "");
         widget.setText(Long.toString(value));
+        widget.setRange(0, TotallyNotRedstone.MAX_DELAY_AND_DURATION);
         addButton(widget);
         return widget;
     }
@@ -146,10 +151,9 @@ public class SequencerScreen extends AbstractFancyScreen {
             newConfig.setSideColorIndex(side.getMessage(), side.getState());
         }
         for (int row = 0; row < SequencerConfig.SEQUENCE_COUNT; row++) {
-            SequenceDefinition s = new SequenceDefinition(Long.parseLong(delays[row].getText()), Long.parseLong(durations[row].getText()));
+            SequenceDefinition s = new SequenceDefinition(delays[row].getValue(), durations[row].getValue());
             newConfig.setSequenceDefinition(row, s);
         }
         tileEntity.setConfig(newConfig);
     }
-
 }

@@ -2,12 +2,10 @@ package tv.mongotheelder.tnr.buttons;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.ToggleWidget;
-import net.minecraft.client.gui.widget.button.CheckboxButton;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
+import tv.mongotheelder.tnr.misc.NumericEntryWidget;
 import tv.mongotheelder.tnr.sequencer.AbstractFancyScreen;
 
 public class TimedButtonScreen extends AbstractFancyScreen {
@@ -20,7 +18,7 @@ public class TimedButtonScreen extends AbstractFancyScreen {
     private static final int ENTRY_WIDTH = 56;
     private static final int ENTRY_HEIGHT = 16;
     private static final int BUTTON_SIZE = 16;
-    private TextFieldWidget pulseWidget;
+    private NumericEntryWidget pulseWidget;
     private BetterToggleWidget enableSoundWidget;
 
     private final TimedButtonTile tileEntity;
@@ -40,7 +38,8 @@ public class TimedButtonScreen extends AbstractFancyScreen {
     @Override
     protected void init() {
         super.init();
-        pulseWidget = new TextFieldWidget(Minecraft.getInstance().fontRenderer, getGuiLeft()+DELAY_X, getGuiTop()+DELAY_Y, ENTRY_WIDTH, ENTRY_HEIGHT, "");
+        pulseWidget = new NumericEntryWidget(Minecraft.getInstance().fontRenderer, getGuiLeft()+DELAY_X, getGuiTop()+DELAY_Y, ENTRY_WIDTH, ENTRY_HEIGHT, "");
+        pulseWidget.setRange(0, TotallyNotRedstone.MAX_TIMED_BUTTON_PULSES);
         pulseWidget.setText(String.format("%d", pulseCount));
         addButton(pulseWidget);
         enableSoundWidget = new BetterToggleWidget(getGuiLeft()+DELAY_X, getGuiTop()+DELAY_Y+ENTRY_HEIGHT+GAP, BUTTON_SIZE, BUTTON_SIZE, enableSound);
@@ -70,7 +69,7 @@ public class TimedButtonScreen extends AbstractFancyScreen {
 
     @Override
     public void onClose() {
-        pulseCount = Integer.parseInt(pulseWidget.getText());
+        pulseCount = (int) pulseWidget.getValue();
         enableSound = enableSoundWidget.isStateTriggered();
         tileEntity.setConfig(pulseCount, enableSound);
         super.onClose();

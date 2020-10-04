@@ -1,6 +1,7 @@
 package tv.mongotheelder.tnr.setup;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import tv.mongotheelder.tnr.TotallyNotRedstone;
 
 public class Config {
     public static final String CATEGORY_BUTTON = "timed_buttons";
@@ -39,9 +40,9 @@ public class Config {
 
         COMMON_BUILDER.push(CATEGORY_BUTTON);
         TIMED_BUTTONS_UNBREAKABLE = COMMON_BUILDER.comment(" Make timed buttons unbreakable").define("timed_buttons_unbreakable", false);
-        TIMED_BUTTONS_PULSE_DURATION = COMMON_BUILDER.comment("Number of ticks per pulse").defineInRange("timed_buttons_pulse_duration", 5, 2, 5000);
-        TIMED_BUTTONS_PULSE_COUNT = COMMON_BUILDER.comment(" Default number of pulses between off and on").defineInRange("timed_buttons_pulse_count_default", 5, 1, 50);
-        TIMED_BUTTONS_PULSE_RATIO = COMMON_BUILDER.comment(" Default percentage of each pulse that the indicator lit").defineInRange("timed_buttons_pulse_ratio", 0.3, 0.01, 0.99);
+        TIMED_BUTTONS_PULSE_DURATION = COMMON_BUILDER.comment(" Number of ticks per pulse").defineInRange("timed_buttons_pulse_duration", 5, 2, 5000);
+        TIMED_BUTTONS_PULSE_COUNT = COMMON_BUILDER.comment(" Default number of pulses between off and on").defineInRange("timed_buttons_pulse_count_default", 5, 1, TotallyNotRedstone.MAX_TIMED_BUTTON_PULSES);
+        TIMED_BUTTONS_PULSE_RATIO = COMMON_BUILDER.comment(" Percentage of each pulse that the indicator lit").defineInRange("timed_buttons_pulse_ratio", 0.3, 0.01, 0.99);
         TIMED_BUTTONS_SETTABLE_WITH_SHIFT_CLICK = COMMON_BUILDER.comment(" Make timed buttons settable by the player by sneaking in addition to creative mode and the programmer (if enabled)").define("timed_buttons_sneaking", false);
         TIMED_BUTTONS_ENABLE_SOUND = COMMON_BUILDER.comment(" Default setting for 'Enable Sound'").define("timed_buttons_sound", true);
 

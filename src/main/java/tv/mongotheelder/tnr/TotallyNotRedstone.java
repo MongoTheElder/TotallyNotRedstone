@@ -27,6 +27,8 @@ public class TotallyNotRedstone {
     public static final ResourceLocation SEQUENCER_GUI_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/sequencer_gui.png");
     public static final ResourceLocation GUI_BUTTONS_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/gui_buttons.png");
     public static final ResourceLocation TIMED_BUTTON_GUI_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/timed_button_gui.png");
+    public static final int MAX_TIMED_BUTTON_PULSES = 50;
+    public static final int MAX_DELAY_AND_DURATION = 1000*20;
 
     public static IProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 

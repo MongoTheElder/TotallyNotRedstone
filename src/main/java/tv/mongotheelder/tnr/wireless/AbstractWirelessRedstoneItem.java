@@ -5,6 +5,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
@@ -22,11 +24,26 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class AbstractWirelessRedstoneItem extends BlockItem {
-    protected BlockPos targetPos;
+    private static final String ITEM_TAG = "TNRWirelessRedstoneItem";
+    private static final String TARGET_POS_TAG = "targetPos";
     private static final Logger LOGGER = LogManager.getLogger();
 
     public AbstractWirelessRedstoneItem(Block blockIn, Item.Properties builder) {
         super(blockIn, builder);
+    }
+
+    private void writeTargetPosTag(ItemUseContext context) {
+        CompoundNBT tag = context.getItem().getOrCreateChildTag(ITEM_TAG);
+        tag.put(TARGET_POS_TAG, NBTUtil.writeBlockPos(context.getPos()));
+    }
+
+    private BlockPos readTargetPosTag(ItemStack stack) {
+        CompoundNBT tag = stack.getOrCreateChildTag(ITEM_TAG);
+        if (tag.contains(TARGET_POS_TAG)) {
+            CompoundNBT posTag = tag.getCompound(TARGET_POS_TAG);
+            return NBTUtil.readBlockPos(posTag);
+        }
+        return null;
     }
 
     public ActionResultType onItemUse(ItemUseContext context) {
@@ -36,7 +53,7 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
         }
         if (context.getPlayer().isCrouching()) {
             if (isValidSourceBlock(context.getWorld(), context.getPos())) {
-                targetPos = context.getPos();
+                writeTargetPosTag(context);
             }
             return ActionResultType.SUCCESS;
         } else {
@@ -51,7 +68,8 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
-        if (targetPos != null && isValidSourceBlock(worldIn, targetPos)) {
+        BlockPos targetPos = readTargetPosTag(stack);
+        if (targetPos != null && worldIn != null && worldIn.isBlockPresent(targetPos) && isValidSourceBlock(worldIn, targetPos)) {
             String blockType = worldIn.getBlockState(targetPos).getBlock().getTranslationKey();
             TranslationTextComponent blockName = new TranslationTextComponent(blockType);
             String newTip = String.format("Linked to %s at %d %d %d", blockName.getUnformattedComponentText(), targetPos.getX(), targetPos.getY(), targetPos.getZ());
@@ -64,6 +82,7 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
 
     @Override
     public ActionResultType tryPlace(BlockItemUseContext context) {
+        BlockPos targetPos = readTargetPosTag(context.getItem());
         if (targetPos == null || !isValidSourceBlock(context.getWorld(), targetPos))
             return ActionResultType.FAIL;
         return super.tryPlace(context);
@@ -73,7 +92,8 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
         MinecraftServer minecraftserver = worldIn.getServer();
         if (minecraftserver != null && player != null) {
             AbstractWirelessRedstoneTile tileEntity = (AbstractWirelessRedstoneTile) worldIn.getTileEntity(pos);
-            if (tileEntity != null) {
+            BlockPos targetPos = readTargetPosTag(stack);
+            if (tileEntity != null && targetPos != null) {
                 tileEntity.setSourcePos(targetPos);
                 return true;
             } else {

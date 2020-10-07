@@ -43,7 +43,7 @@ public class Config {
         TIMED_BUTTONS_PULSE_DURATION = COMMON_BUILDER.comment(" Number of ticks per pulse").defineInRange("timed_buttons_pulse_duration", 5, 2, 5000);
         TIMED_BUTTONS_PULSE_COUNT = COMMON_BUILDER.comment(" Default number of pulses between off and on").defineInRange("timed_buttons_pulse_count_default", 5, 1, TotallyNotRedstone.MAX_TIMED_BUTTON_PULSES);
         TIMED_BUTTONS_PULSE_RATIO = COMMON_BUILDER.comment(" Percentage of each pulse that the indicator lit").defineInRange("timed_buttons_pulse_ratio", 0.3, 0.01, 0.99);
-        TIMED_BUTTONS_SETTABLE_WITH_SHIFT_CLICK = COMMON_BUILDER.comment(" Make timed buttons settable by the player by sneaking in addition to creative mode and the programmer (if enabled)").define("timed_buttons_sneaking", false);
+        TIMED_BUTTONS_SETTABLE_WITH_SHIFT_CLICK = COMMON_BUILDER.comment(" Make timed buttons settable by the player by sneaking in addition to creative mode and the programmer").define("timed_buttons_sneaking", false);
         TIMED_BUTTONS_ENABLE_SOUND = COMMON_BUILDER.comment(" Default setting for 'Enable Sound'").define("timed_buttons_sound", true);
 
         COMMON_BUILDER.pop().push(CATEGORY_KEYPAD);

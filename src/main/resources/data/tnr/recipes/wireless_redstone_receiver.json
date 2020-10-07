@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " r ",
+    " p ",
+    "sss"
+  ],
+  "key": {
+    "r": {
+      "item": "minecraft:redstone_lamp"
+    },
+    "s": {
+      "item": "minecraft:stone_slab"
+    },
+    "p": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "tnr:wireless_redstone_receiver",
+    "count": 4
+  }
+}

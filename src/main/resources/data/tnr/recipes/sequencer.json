@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " r ",
+    "rcr",
+    " rr"
+  ],
+  "key": {
+    "r": {
+      "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "item": "minecraft:clock"
+    }
+  },
+  "result": {
+    "item": "tnr:sequencer"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " g ",
+    "gtg",
+    "gpg"
+  ],
+  "key": {
+    "g": {
+      "tag": "forge:glass_panes/yellow"
+    },
+    "t": {
+      "item": "minecraft:redstone_torch"
+    },
+    "p": {
+      "tag": "forge:ender_pearls"
+    }
+  },
+  "result": {
+    "item": "tnr:wireless_redstone_indicator_yellow",
+    "count": 4
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "bbb",
+    "s s"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:stone_button"
+    },
+    "c": {
+      "item": "minecraft:clock"
+    },
+    "s": {
+      "item": "minecraft:stone_slab"
+    }
+  },
+  "result": {
+    "item": "tnr:medium_timed_button",
+    "count": 4
+  }
+}

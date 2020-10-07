@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bbb",
+    "brb",
+    "bbb"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:stone_button"
+    },
+    "r": {
+      "item": "minecraft:repeater"
+    }
+  },
+  "result": {
+    "item": "tnr:programmer"
+  }
+}

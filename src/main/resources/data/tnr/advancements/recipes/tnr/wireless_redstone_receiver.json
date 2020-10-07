@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "tnr:wireless_redstone_receiver"
+    ]
+  },
+  "criteria": {
+    "has_redstone_lamp": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:redstone_lamp"
+          }
+        ]
+      }
+    },
+    "has_ender_pearl": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ender_pearls"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "tnr:wireless_redstone_receiver"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_redstone_lamp",
+      "has_ender_pearl",
+      "has_the_recipe"
+    ]
+  ]
+}

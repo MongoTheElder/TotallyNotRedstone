@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "bbb",
+    "brb",
+    "bbb"
+  ],
+  "key": {
+    "b": {
+      "item": "minecraft:stone_button"
+    },
+    "r": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "result": {
+    "item": "tnr:keypad"
+  }
+}

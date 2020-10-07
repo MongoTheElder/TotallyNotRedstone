@@ -10,10 +10,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -62,6 +59,13 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
         }
     }
 
+    private StringTextComponent coloredTextComponent(String tip, TextFormatting color) {
+        StringTextComponent stringTextComponent = new StringTextComponent(tip);
+        Style style = stringTextComponent.getStyle();
+        style.setFormatting(color);
+        stringTextComponent.setStyle(style);
+        return stringTextComponent;
+    }
     /**
      * allows items to add custom lines of information to the mouseover description
      */
@@ -73,9 +77,9 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
             String blockType = worldIn.getBlockState(targetPos).getBlock().getTranslationKey();
             TranslationTextComponent blockName = new TranslationTextComponent(blockType);
             String newTip = String.format("Linked to %s at %d %d %d", blockName.getUnformattedComponentText(), targetPos.getX(), targetPos.getY(), targetPos.getZ());
-            tooltip.add(new StringTextComponent(newTip).applyTextStyle(TextFormatting.GREEN));
+            tooltip.add(coloredTextComponent(newTip, TextFormatting.GREEN));
         } else {
-            tooltip.add(new StringTextComponent("Not linked").applyTextStyle(TextFormatting.RED));
+            tooltip.add(coloredTextComponent("Not linked", TextFormatting.RED));
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }

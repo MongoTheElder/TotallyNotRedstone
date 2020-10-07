@@ -104,9 +104,9 @@ public class SequencerTile extends TileEntity implements ITickableTileEntity {
     }
 
     @Override
-    public void read(CompoundNBT tag) {
+    public void read(BlockState state, CompoundNBT tag) {
 
-        super.read(tag);
+        super.read(state, tag);
         if (tag.contains(TotallyNotRedstone.SEQUENCER_CONFIG_TAG)) {
             config.loadConfigFromNBT(tag.getCompound(TotallyNotRedstone.SEQUENCER_CONFIG_TAG));
         }

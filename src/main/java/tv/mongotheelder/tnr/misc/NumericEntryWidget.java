@@ -2,6 +2,7 @@ package tv.mongotheelder.tnr.misc;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.StringTextComponent;
 
 import java.util.function.Consumer;
 
@@ -12,7 +13,7 @@ public class NumericEntryWidget extends TextFieldWidget {
     private int defaultColor;
 
     public NumericEntryWidget(FontRenderer fontIn, int xIn, int yIn, int widthIn, int heightIn, String msg) {
-        super(fontIn, xIn, yIn, widthIn, heightIn, msg);
+        super(fontIn, xIn, yIn, widthIn, heightIn, new StringTextComponent(msg));
         setResponder(new Validator(this));
         defaultColor = this.getFGColor();
     }

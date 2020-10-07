@@ -1,12 +1,17 @@
 package tv.mongotheelder.tnr.keypad;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
 
@@ -27,8 +32,11 @@ public class KeypadScreen extends ContainerScreen<KeypadContainer> {
     private static final int ROW_MAX = 4;
     private static final int COL_MAX = 3;
     private static final String SET = "Set";
-    private static final String CLEAR = "C";
-    private static final String ENTER = "E";
+    private static final String CLEAR = "Clear";
+    private static final String ENTER = "Enter";
+    private static final ITextComponent SET_LABEL = new TranslationTextComponent("gui.tnr.keypad.set");
+    private static final ITextComponent CLEAR_LABEL = new TranslationTextComponent("gui.tnr.keypad.clear");
+    private static final ITextComponent ENTER_LABEL = new TranslationTextComponent("gui.tnr.keypad.enter");
     private final Map<String, Button> buttons = new HashMap<>();
     private String userCode = "";
 
@@ -50,35 +58,36 @@ public class KeypadScreen extends ContainerScreen<KeypadContainer> {
         updateDisplay();
     }
 
+    @Override
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int x, int y) {
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.KEYPAD_GUI_PATH);
+        int relX = (this.width - this.xSize) / 2;
+        int relY = (this.height - this.ySize) / 2;
+        this.blit(matrixStack, relX, relY, 0, 0, this.xSize, this.ySize);
+    }
+
     private boolean inCreative() {
         return playerInventory.player.isCreative();
     }
 
     private boolean hasProgrammer() {
-        return ItemTags.getCollection().getOrCreate(TotallyNotRedstone.PROGRAMMER_TAG).contains(playerInventory.getCurrentItem().getItem());
-    }
-
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.KEYPAD_GUI_PATH);
-        int relX = (this.width - this.xSize) / 2;
-        int relY = (this.height - this.ySize) / 2;
-        this.blit(relX, relY, 0, 0, this.xSize, this.ySize);
+        ITag<Item> tag = ItemTags.getCollection().get(TotallyNotRedstone.PROGRAMMER_TAG);
+        return tag != null && tag.contains(playerInventory.getCurrentItem().getItem());
     }
 
     private String getLockStateString() {
         boolean isUnlocked = container.getUnlockState();
-        return new TranslationTextComponent(isUnlocked ? TotallyNotRedstone.UNLOCKED_KEY : TotallyNotRedstone.LOCKED_KEY).getFormattedText();
+        return new TranslationTextComponent(isUnlocked ? TotallyNotRedstone.UNLOCKED_KEY : TotallyNotRedstone.LOCKED_KEY).getString();
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.KEYPAD_GUI_PATH);
-        Minecraft.getInstance().fontRenderer.drawString(getLockStateString(), BUTTON_X+BUTTON_SPACING*COL_MAX, BUTTON_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack, getLockStateString(), BUTTON_X+BUTTON_SPACING*COL_MAX, BUTTON_Y, 0x000000);
         for (int index = 0; index < userCode.length(); index++) {
-            Minecraft.getInstance().fontRenderer.drawString(userCode.substring(index, index+1), (float)(CODE_OFFSET_X+index*CODE_GAP), (float)CODE_OFFSET_Y, 0xff0000);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack, userCode.substring(index, index+1), (float)(CODE_OFFSET_X+index*CODE_GAP), (float)CODE_OFFSET_Y, 0xff0000);
         }
     }
 
@@ -99,28 +108,29 @@ public class KeypadScreen extends ContainerScreen<KeypadContainer> {
                 int index = row*COL_MAX+col;
                 switch (index) {
                     case 9:
-                        buttons.put(CLEAR, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*col, getGuiTop()+BUTTON_Y+BUTTON_SPACING*row, BUTTON_SIZE, BUTTON_SIZE, CLEAR, new ClearButtonPress()));
+                        buttons.put(CLEAR, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*col, getGuiTop()+BUTTON_Y+BUTTON_SPACING*row, BUTTON_SIZE, BUTTON_SIZE, CLEAR_LABEL, new ClearButtonPress()));
                         addButton(buttons.get(CLEAR));
                         break;
                     case 11:
-                        buttons.put(ENTER, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*col, getGuiTop()+BUTTON_Y+BUTTON_SPACING*row, BUTTON_SIZE, BUTTON_SIZE, ENTER, new EnterButtonPress()));
+                        buttons.put(ENTER, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*col, getGuiTop()+BUTTON_Y+BUTTON_SPACING*row, BUTTON_SIZE, BUTTON_SIZE, ENTER_LABEL, new EnterButtonPress()));
                         buttons.get(ENTER).active = false;
                         addButton(buttons.get(ENTER));
                         break;
                     default:
-                        String label = String.format("%d", buttonMap[index]);
-                        buttons.put(label, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*col, getGuiTop()+BUTTON_Y+BUTTON_SPACING*row, BUTTON_SIZE, BUTTON_SIZE, label, new NumberButtonPress()));
-                        addButton(buttons.get(label));
+                        String buttonName = String.format("%d", buttonMap[index]);
+                        TextComponent buttonLabel = new StringTextComponent(buttonName);
+                        buttons.put(buttonName, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*col, getGuiTop()+BUTTON_Y+BUTTON_SPACING*row, BUTTON_SIZE, BUTTON_SIZE, buttonLabel, new NumberButtonPress()));
+                        addButton(buttons.get(buttonName));
                 }
             }
         }
     }
 
     private void placeSetButton() {
-        buttons.put(SET, new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*COL_MAX, getGuiTop()+BUTTON_Y+BUTTON_SPACING*(ROW_MAX-1), BUTTON_SIZE, BUTTON_SIZE, SET, new SetButtonPress()));
-        buttons.get(SET).active = false;
-        addButton(buttons.get(SET));
-
+        Button button = new Button(getGuiLeft()+BUTTON_X+BUTTON_SPACING*COL_MAX, getGuiTop()+BUTTON_Y+BUTTON_SPACING*(ROW_MAX-1), BUTTON_SIZE, BUTTON_SIZE, SET_LABEL, new SetButtonPress());
+        buttons.put(SET, button);
+        button.active = false;
+        addButton(button);
     }
 
     private void addKey(String num) {
@@ -155,7 +165,7 @@ public class KeypadScreen extends ContainerScreen<KeypadContainer> {
     class NumberButtonPress implements Button.IPressable {
          @Override
         public void onPress(Button button) {
-            addKey(button.getMessage());
+            addKey(button.getMessage().getString());
         }
     }
 

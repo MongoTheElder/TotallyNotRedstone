@@ -1,5 +1,6 @@
 package tv.mongotheelder.tnr.wireless;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
@@ -7,6 +8,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -36,7 +38,8 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
     }
 
     protected static boolean isRedstoneController(BlockState blockState) {
-        return BlockTags.getCollection().getOrCreate(TotallyNotRedstone.REDSTONE_CONTROLLERS_TAG).contains(blockState.getBlock());
+        ITag<Block> tag = BlockTags.getCollection().get(TotallyNotRedstone.REDSTONE_CONTROLLERS_TAG);
+        return tag != null && tag.contains(blockState.getBlock());
     }
 
     public static boolean isValidSourceBlock(World world, BlockPos pos) {
@@ -54,11 +57,11 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
     }
 
     @Override
-    public void handleUpdateTag(CompoundNBT tag) {
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
         // This is actually the default but placed here so you
         // know this is the place to potentially have a lighter read() that only
         // considers things needed client-side
-        read(tag);
+        read(state, tag);
     }
 
     @Nullable
@@ -70,12 +73,14 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT tag = pkt.getNbtCompound();
-        handleUpdateTag(tag);
+        if (world == null) return;
+        BlockState state = world.getBlockState(pos);
+        handleUpdateTag(state, tag);
     }
 
     @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
+    public void read(BlockState state, CompoundNBT tag) {
+        super.read(state, tag);
         if (tag.contains(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG)) {
             sourcePos = NBTUtil.readBlockPos(tag.getCompound(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG));
         }

@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
@@ -16,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 import tv.mongotheelder.tnr.misc.SixWayFacingBlock;
 import tv.mongotheelder.tnr.networking.PacketHandler;
 import tv.mongotheelder.tnr.setup.Config;
@@ -26,24 +28,27 @@ import javax.annotation.Nullable;
 
 public class TimedButton extends SixWayFacingBlock {
     public static final EnumProperty<TimedButtonStates> STATE = EnumProperty.create("state", TimedButtonStates.class);
+    public static final BooleanProperty INDICATOR = BooleanProperty.create("indicator");
+    private static final float BASE_HARDNESS = 1.2f;
 
     public TimedButton(Properties properties) {
         super(properties);
         setDefaultState(this.stateContainer.getBaseState()
                 .with(STATE, TimedButtonStates.OFF)
+                .with(INDICATOR, false)
                 .with(BlockStateProperties.POWERED, false));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(STATE, BlockStateProperties.POWERED);
+        builder.add(STATE, INDICATOR, BlockStateProperties.POWERED);
     }
 
     @Deprecated
     @SuppressWarnings("deprecation")
     public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
-        return Config.TIMED_BUTTONS_UNBREAKABLE.get() ? -1f : this.blockHardness;
+        return Config.TIMED_BUTTONS_UNBREAKABLE.get() ? -1f : BASE_HARDNESS;
     }
 
     @Override
@@ -103,4 +108,8 @@ public class TimedButton extends SixWayFacingBlock {
         return side == SixWayFacingBlock.getFacing(blockState) ? blockState.get(BlockStateProperties.POWERED) ? 15 : 0 : 0;
     }
 
+    public void updateNeighbors(BlockState state, World worldIn, BlockPos pos) {
+        worldIn.notifyNeighborsOfStateChange(pos, this);
+        worldIn.notifyNeighborsOfStateChange(pos.offset(getFacing(state).getOpposite()), this);
+    }
 }

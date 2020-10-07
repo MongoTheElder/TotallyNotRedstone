@@ -1,5 +1,6 @@
 package tv.mongotheelder.tnr.sequencer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.tileentity.TileEntity;
@@ -27,26 +28,27 @@ public abstract class AbstractFancyScreen extends Screen {
     }
 
     @Override
-    public void render(int p_render_1_, int p_render_2_, float p_render_3_) {
+    public void render(MatrixStack matrixStack, int p_render_1_, int p_render_2_, float p_render_3_) {
 
-        this.drawGuiContainerBackgroundLayer(p_render_3_, p_render_1_, p_render_2_);
+        this.drawGuiContainerBackgroundLayer(matrixStack, p_render_3_, p_render_1_, p_render_2_);
         //net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiContainerEvent.DrawBackground(this, p_render_1_, p_render_2_));
+        matrixStack.push();
         RenderSystem.disableRescaleNormal();
         RenderSystem.disableDepthTest();
 
-        super.render(p_render_1_, p_render_2_, p_render_3_);
+        super.render(matrixStack, p_render_1_, p_render_2_, p_render_3_);
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef((float)this.guiLeft, (float)this.guiTop, 0.0F);
+
+        matrixStack.translate((float)this.guiLeft, (float)this.guiTop, 0.0F);
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.enableRescaleNormal();
 
         RenderSystem.glMultiTexCoord2f(33986, 240.0F, 240.0F);
 
-        this.drawGuiContainerForegroundLayer(p_render_1_, p_render_2_);
+        this.drawGuiContainerForegroundLayer(matrixStack, p_render_1_, p_render_2_);
         //net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.client.event.GuiContainerEvent.DrawForeground(this, p_render_1_, p_render_2_));
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
         RenderSystem.enableDepthTest();
     }
 
@@ -55,7 +57,7 @@ public abstract class AbstractFancyScreen extends Screen {
     public int getXSize() { return xSize; }
     public int getYSize() { return ySize; }
 
-    abstract protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY);
-    abstract protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY);
+    abstract protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY);
+    abstract protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY);
 
 }

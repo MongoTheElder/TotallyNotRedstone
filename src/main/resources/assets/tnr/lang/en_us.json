@@ -35,6 +35,9 @@
   "item.tnr.keypad": "Keypad",
   "gui.tnr.keypad.locked": "Locked",
   "gui.tnr.keypad.unlocked": "Unlocked",
+  "gui.tnr.keypad.set": "Set",
+  "gui.tnr.keypad.enter": "E",
+  "gui.tnr.keypad.clear": "C",
   "subtitle.tnr.keypad.error": "An annoying buzz indicating an error",
 
   "block.tnr.small_timed_button": "Small Timed Button",

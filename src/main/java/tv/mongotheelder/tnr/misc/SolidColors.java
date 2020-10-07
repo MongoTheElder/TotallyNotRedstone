@@ -1,7 +1,6 @@
 package tv.mongotheelder.tnr.misc;
 
 import net.minecraft.item.Item;
-import net.minecraft.tags.Tag;
 import net.minecraftforge.common.Tags;
 
 public enum SolidColors {
@@ -18,9 +17,9 @@ public enum SolidColors {
 
     String primary;
     String secondary;
-    Tag<Item> pane;
+    Tags.IOptionalNamedTag<Item> pane;
 
-    SolidColors(String primary, String secondary, Tag<Item> pane) {
+    SolidColors(String primary, String secondary, Tags.IOptionalNamedTag<Item> pane) {
         this.primary = primary;
         this.secondary = secondary;
         this.pane = pane;
@@ -28,7 +27,7 @@ public enum SolidColors {
 
     public String getPrimary() { return primary; }
     public String getSecondary() { return secondary; }
-    public Tag<Item> getPane() { return pane; }
+    public Tags.IOptionalNamedTag<Item> getPane() { return pane; }
 
     public SolidColors getByPrimaryColor(String color) {
         for(SolidColors c: SolidColors.values()) {

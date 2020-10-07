@@ -18,7 +18,6 @@ public enum SideColor implements IStringSerializable {
         this.index = index;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -41,4 +40,8 @@ public enum SideColor implements IStringSerializable {
         return null;
     }
 
+    @Override
+    public String getString() {
+        return getName();
+    }
 }

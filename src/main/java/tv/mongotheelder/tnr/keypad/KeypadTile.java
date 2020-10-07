@@ -96,16 +96,13 @@ public class KeypadTile extends TileEntity implements INamedContainerProvider, I
     }
 
     @Override
-    public void handleUpdateTag(CompoundNBT tag) {
-        // This is actually the default but placed here so you
-        // know this is the place to potentially have a lighter read() that only
-        // considers things needed client-side
-        read(tag);
+    public void handleUpdateTag(BlockState state, CompoundNBT tag) {
+        read(state, tag);
     }
 
     @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
+    public void read(BlockState state, CompoundNBT tag) {
+        super.read(state, tag);
         if (tag.contains(TotallyNotRedstone.KEYPAD_CODE_TAG)) {
             code = tag.get(TotallyNotRedstone.KEYPAD_CODE_TAG).getString();
         }
@@ -129,7 +126,9 @@ public class KeypadTile extends TileEntity implements INamedContainerProvider, I
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         CompoundNBT tag = pkt.getNbtCompound();
-        handleUpdateTag(tag);
+        if (world == null) return;
+        BlockState state = world.getBlockState(pos);
+        handleUpdateTag(state, tag);
     }
 
 }

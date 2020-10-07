@@ -1,11 +1,14 @@
 package tv.mongotheelder.tnr.sequencer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 
 public class SideSelectionButton extends Button {
     protected ResourceLocation resourceLocation;
@@ -19,7 +22,7 @@ public class SideSelectionButton extends Button {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public SideSelectionButton(int xIn, int yIn, int widthIn, int heightIn, int count, String label, int state, Button.IPressable onPress) {
-        super(xIn, yIn, widthIn, heightIn, label, onPress);
+        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(label), onPress);
         this.state = state;
         this.count = count;
     }
@@ -58,7 +61,7 @@ public class SideSelectionButton extends Button {
         return state;
     }
 
-    public void renderButton(int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+    public void renderButton(MatrixStack matrixStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getTextureManager().bindTexture(this.resourceLocation);
         RenderSystem.disableDepthTest();
@@ -70,7 +73,7 @@ public class SideSelectionButton extends Button {
             j += this.yDiffTex;
         }
 
-        this.blit(this.x, this.y, i, j, this.width, this.height);
+        this.blit(matrixStack, this.x, this.y, i, j, this.width, this.height);
         RenderSystem.enableDepthTest();
     }
 

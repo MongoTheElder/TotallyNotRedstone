@@ -37,5 +37,10 @@ public enum TimedButtonStates implements IStringSerializable {
                 return OFF;
         }
     }
+
+    @Override
+    public String getString() {
+        return getName();
+    }
 }
 

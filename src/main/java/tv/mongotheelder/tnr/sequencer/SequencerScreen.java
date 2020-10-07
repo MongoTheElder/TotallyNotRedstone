@@ -1,5 +1,6 @@
 package tv.mongotheelder.tnr.sequencer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -55,26 +56,26 @@ public class SequencerScreen extends AbstractFancyScreen {
     }
 
     private String getTranslatedString(String item) {
-        return new TranslationTextComponent("gui.tnr.sequencer."+item).getFormattedText();
+        return new TranslationTextComponent("gui.tnr.sequencer."+item).getString();
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matricStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.SEQUENCER_GUI_PATH);
         int relX = (this.width - this.xSize) / 2;
         int relY = (this.height - this.ySize) / 2;
-        this.blit(relX, relY, 0, 0, this.xSize, this.ySize);
+        this.blit(matricStack, relX, relY, 0, 0, this.xSize, this.ySize);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack matricStack, int mouseX, int mouseY) {
         RenderSystem.color4f(0.0F, 0.0F, 0.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.SEQUENCER_GUI_PATH);
-        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("delay"), TIME_ENTRY_X, TIME_ENTRY_Y, 0x000000);
-        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("duration"), TIME_ENTRY_X +ENTRY_WIDTH+GAP, TIME_ENTRY_Y, 0x000000);
-        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("trigger"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y, 0x000000);
-        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString("threshold"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y+BUTTON_SIZE+GAP+13, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(matricStack, getTranslatedString("delay"), TIME_ENTRY_X, TIME_ENTRY_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(matricStack, getTranslatedString("duration"), TIME_ENTRY_X +ENTRY_WIDTH+GAP, TIME_ENTRY_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(matricStack, getTranslatedString("trigger"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(matricStack, getTranslatedString("threshold"), SIDE_BUTTON_X +ENTRY_WIDTH+GAP, CONTROL_GROUP_Y+BUTTON_SIZE+GAP+13, 0x000000);
     }
 
     private NumericEntryWidget textField(FontRenderer fr, int row, int col, long value) {
@@ -148,7 +149,7 @@ public class SequencerScreen extends AbstractFancyScreen {
         }
         newConfig.setThreshold(slider.getCurrentValue());
         for (SideSelectionButton side: sides) {
-            newConfig.setSideColorIndex(side.getMessage(), side.getState());
+            newConfig.setSideColorIndex(side.getMessage().getString(), side.getState());
         }
         for (int row = 0; row < SequencerConfig.SEQUENCE_COUNT; row++) {
             SequenceDefinition s = new SequenceDefinition(delays[row].getValue(), durations[row].getValue());

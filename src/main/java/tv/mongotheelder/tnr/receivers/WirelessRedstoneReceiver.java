@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 public class WirelessRedstoneReceiver extends SixWayFacingBlock {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final float BASE_HARDNESS = 1.2f;
 
     private AxisAlignedBB SHAPE = new AxisAlignedBB(5, 5, 0, 11, 11, 2);
 
@@ -55,7 +56,7 @@ public class WirelessRedstoneReceiver extends SixWayFacingBlock {
     @Deprecated
     @SuppressWarnings("deprecation")
     public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
-        return Config.WIRELESS_REDSTONE_RECEIVER_UNBREAKABLE.get() ? -1f : this.blockHardness;
+        return Config.WIRELESS_REDSTONE_RECEIVER_UNBREAKABLE.get() ? -1f : BASE_HARDNESS;
     }
 
     @Override

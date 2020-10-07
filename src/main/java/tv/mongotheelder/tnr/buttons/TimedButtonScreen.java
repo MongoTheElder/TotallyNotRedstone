@@ -1,5 +1,6 @@
 package tv.mongotheelder.tnr.buttons;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
@@ -48,22 +49,22 @@ public class TimedButtonScreen extends AbstractFancyScreen {
     }
 
     private String getTranslatedString(String key) {
-        return new TranslationTextComponent(key).getFormattedText();
+        return new TranslationTextComponent(key).getString();
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(TotallyNotRedstone.TIMED_BUTTON_GUI_PATH);
         int relX = (this.width - this.xSize) / 2;
         int relY = (this.height - this.ySize) / 2;
-        this.blit(relX, relY, 0, 0, this.xSize, this.ySize);
-        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString(TotallyNotRedstone.TIMED_BUTTON_PULSE_COUNT_KEY), getGuiLeft()+DELAY_X, getGuiTop()+DELAY_Y-TEXT_HEIGHT, 0x000000);
-        Minecraft.getInstance().fontRenderer.drawString(getTranslatedString(TotallyNotRedstone.TIMED_BUTTON_ENABLE_SOUND_KEY), getGuiLeft()+DELAY_X+BUTTON_SIZE+GAP, getGuiTop()+DELAY_Y+ENTRY_HEIGHT+3*GAP, 0x000000);
+        this.blit(matrixStack, relX, relY, 0, 0, this.xSize, this.ySize);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack, getTranslatedString(TotallyNotRedstone.TIMED_BUTTON_PULSE_COUNT_KEY), getGuiLeft()+DELAY_X, getGuiTop()+DELAY_Y-TEXT_HEIGHT, 0x000000);
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack, getTranslatedString(TotallyNotRedstone.TIMED_BUTTON_ENABLE_SOUND_KEY), getGuiLeft()+DELAY_X+BUTTON_SIZE+GAP, getGuiTop()+DELAY_Y+ENTRY_HEIGHT+3*GAP, 0x000000);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
 
     }
 

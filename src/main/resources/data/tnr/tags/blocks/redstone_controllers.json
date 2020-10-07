@@ -8,6 +8,7 @@
     "minecraft:redstone_torch",
     "minecraft:redstone_wall_torch",
     "minecraft:redstone_wire",
-    "tnr:keypad"
+    "tnr:keypad",
+    "#tnr:timed_buttons"
   ]
 }

@@ -1,9 +1,9 @@
 package tv.mongotheelder.tnr.datagen;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.generators.ExistingFileHelper;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
 import net.minecraftforge.client.model.generators.ModelBuilder;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
 import tv.mongotheelder.tnr.misc.SolidColors;
 import tv.mongotheelder.tnr.setup.Registration;

@@ -9,6 +9,8 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
 import tv.mongotheelder.tnr.networking.PacketHandler;
 import tv.mongotheelder.tnr.setup.Config;
@@ -68,8 +70,8 @@ public class TimedButtonTile extends TileEntity implements ITickableTileEntity {
             if (phase < pulseCount) {
                 if (timerCount < pulseDuration) {
                     boolean inLit = timerCount < pulseDuration * pulseRatio;
-                    if (blockState.get(BlockStateProperties.POWERED) != inLit) {
-                        world.setBlockState(pos, blockState.with(BlockStateProperties.POWERED, inLit));
+                    if (blockState.get(TimedButton.INDICATOR) != inLit) {
+                        world.setBlockState(pos, blockState.with(TimedButton.INDICATOR, inLit));
                         // only beep on the off/on transitions
                         if (timerCount == 0) shortBeepSound();
                     }
@@ -81,10 +83,14 @@ public class TimedButtonTile extends TileEntity implements ITickableTileEntity {
             } else {
                 timerCount = 0;
                 phase = 0;
-                world.setBlockState(pos, blockState.with(TimedButton.STATE, TimedButtonStates.ON).with(BlockStateProperties.POWERED, false));
+                world.setBlockState(pos, blockState.with(TimedButton.STATE, TimedButtonStates.ON).with(TimedButton.INDICATOR, false));
                 longBeepSound();
                 markDirty();
             }
+        } else {
+            blockState = blockState.with(BlockStateProperties.POWERED, state == TimedButtonStates.ON);
+            world.setBlockState(pos, blockState);
+            ((TimedButton)blockState.getBlock()).updateNeighbors(blockState, world, pos);
         }
     }
 
@@ -109,8 +115,8 @@ public class TimedButtonTile extends TileEntity implements ITickableTileEntity {
     }
 
     @Override
-    public void read(CompoundNBT tag) {
-        super.read(tag);
+    public void read(BlockState state, CompoundNBT tag) {
+        super.read(state, tag);
         if (tag.contains(TotallyNotRedstone.TIMED_BUTTONS_TAG)) {
             CompoundNBT buttonConfig = tag.getCompound(TotallyNotRedstone.TIMED_BUTTONS_TAG);
             pulseCount = buttonConfig.getInt(PULSE_COUNT_KEY);
@@ -139,6 +145,8 @@ public class TimedButtonTile extends TileEntity implements ITickableTileEntity {
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt){
         CompoundNBT tag = pkt.getNbtCompound();
-        read(tag);
+        if (world == null) return;
+        BlockState state = world.getBlockState(pos);
+        read(state, tag);
     }
 }

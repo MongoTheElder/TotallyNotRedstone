@@ -17,7 +17,6 @@ public enum SequencerMode implements IStringSerializable {
         this.index = index;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -38,5 +37,10 @@ public enum SequencerMode implements IStringSerializable {
             if (mode.getIndex() == index) return mode;
         }
         return NEVER;
+    }
+
+    @Override
+    public String getString() {
+        return getName();
     }
 }

@@ -1,9 +1,11 @@
 package tv.mongotheelder.tnr.sequencer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.button.AbstractButton;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,7 +20,7 @@ public class TriggerModeButton extends AbstractButton {
     protected int yDiffTex;
 
     public TriggerModeButton(int xIn, int yIn, int widthIn, int heightIn, SequencerMode mode, SequencerMode activeMode, TriggerModeButton.IPressable onPress) {
-        super(xIn, yIn, widthIn, heightIn, "");
+        super(xIn, yIn, widthIn, heightIn, new StringTextComponent(""));
         this.onPress = onPress;
         this.mode = mode;
         this.stateTriggered = (mode == activeMode);
@@ -44,7 +46,7 @@ public class TriggerModeButton extends AbstractButton {
         return this.stateTriggered;
     }
 
-    public void renderButton(int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
+    public void renderButton(MatrixStack matrixStack, int p_renderButton_1_, int p_renderButton_2_, float p_renderButton_3_) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getTextureManager().bindTexture(this.resourceLocation);
         RenderSystem.disableDepthTest();
@@ -58,7 +60,7 @@ public class TriggerModeButton extends AbstractButton {
             j += this.yDiffTex;
         }
 
-        this.blit(this.x, this.y, i, j, this.width, this.height);
+        this.blit(matrixStack, this.x, this.y, i, j, this.width, this.height);
         RenderSystem.enableDepthTest();
     }
 

@@ -6,8 +6,9 @@ import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.LootTableProvider;
 import net.minecraft.data.loot.BlockLootTables;
+import net.minecraft.loot.*;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.*;
+
 import tv.mongotheelder.tnr.misc.SolidColors;
 import tv.mongotheelder.tnr.setup.Registration;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
 
 public class GeneratorLoot extends LootTableProvider {
     public GeneratorLoot(DataGenerator dataGeneratorIn) {
@@ -32,7 +34,7 @@ public class GeneratorLoot extends LootTableProvider {
 
     @Override
     protected void validate(Map<ResourceLocation, LootTable> map, ValidationTracker validationresults) {
-        map.forEach((name, table) -> LootTableManager.func_227508_a_(validationresults, name, table));
+        map.forEach((name, table) -> LootTableManager.validateLootTable(validationresults, name, table));
     }
 
     private static class Blocks extends BlockLootTables {

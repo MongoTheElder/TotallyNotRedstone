@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 public class TimedButton extends SixWayFacingBlock {
     public static final EnumProperty<TimedButtonStates> STATE = EnumProperty.create("state", TimedButtonStates.class);
     public static final BooleanProperty INDICATOR = BooleanProperty.create("indicator");
-    private static final float BASE_HARDNESS = 1.2f;
+    public static final float BASE_HARDNESS = 0.6f;
 
     public TimedButton(Properties properties) {
         super(properties);
@@ -45,9 +45,9 @@ public class TimedButton extends SixWayFacingBlock {
         builder.add(STATE, INDICATOR, BlockStateProperties.POWERED);
     }
 
-    @Deprecated
+    @Override
     @SuppressWarnings("deprecation")
-    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
         return Config.TIMED_BUTTONS_UNBREAKABLE.get() ? -1f : BASE_HARDNESS;
     }
 

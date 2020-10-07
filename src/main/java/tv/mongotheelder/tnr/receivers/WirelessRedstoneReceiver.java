@@ -2,6 +2,7 @@ package tv.mongotheelder.tnr.receivers;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +22,7 @@ import javax.annotation.Nullable;
 
 public class WirelessRedstoneReceiver extends SixWayFacingBlock {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final float BASE_HARDNESS = 1.2f;
+    public static final float BASE_HARDNESS = 1.2f;
 
     private AxisAlignedBB SHAPE = new AxisAlignedBB(5, 5, 0, 11, 11, 2);
 
@@ -53,9 +54,9 @@ public class WirelessRedstoneReceiver extends SixWayFacingBlock {
         return new WirelessRedstoneReceiverTile();
     }
 
-    @Deprecated
+    @Override
     @SuppressWarnings("deprecation")
-    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
         return Config.WIRELESS_REDSTONE_RECEIVER_UNBREAKABLE.get() ? -1f : BASE_HARDNESS;
     }
 

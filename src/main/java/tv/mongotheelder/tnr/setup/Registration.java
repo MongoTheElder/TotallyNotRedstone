@@ -16,10 +16,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import tv.mongotheelder.tnr.TotallyNotRedstone;
-import tv.mongotheelder.tnr.buttons.LargeTimedButton;
-import tv.mongotheelder.tnr.buttons.MediumTimedButton;
-import tv.mongotheelder.tnr.buttons.SmallTimedButton;
-import tv.mongotheelder.tnr.buttons.TimedButtonTile;
+import tv.mongotheelder.tnr.buttons.*;
 import tv.mongotheelder.tnr.indicators.WirelessRedstoneIndicator;
 import tv.mongotheelder.tnr.indicators.WirelessRedstoneIndicatorItem;
 import tv.mongotheelder.tnr.indicators.WirelessRedstoneIndicatorTile;
@@ -64,16 +61,16 @@ public class Registration {
     public static final RegistryObject<TileEntityType<SequencerTile>> SEQUENCER_TILE = TILES.register("sequencer", () -> TileEntityType.Builder.create(SequencerTile::new, SEQUENCER_BLOCK.get()).build(null));
 
     // Keypad
-    public static final RegistryObject<Keypad> KEYPAD_BLOCK = BLOCKS.register("keypad", () -> new Keypad(Block.Properties.create(Material.IRON).hardnessAndResistance(1.2f).sound(SoundType.METAL)));
+    public static final RegistryObject<Keypad> KEYPAD_BLOCK = BLOCKS.register("keypad", () -> new Keypad(Block.Properties.create(Material.IRON).hardnessAndResistance(Keypad.BASE_HARDNESS).sound(SoundType.METAL)));
     public static final RegistryObject<Item> KEYPAD_ITEM = ITEMS.register("keypad", () -> new BlockItem(KEYPAD_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
     public static final RegistryObject<TileEntityType<KeypadTile>>KEYPAD_TILE = TILES.register("keypad", () -> TileEntityType.Builder.create(KeypadTile::new, KEYPAD_BLOCK.get()).build(null));
     public static final RegistryObject<SoundEvent> KEYPAD_ERROR_SOUND = SOUNDS.register("keypad_error", () -> new SoundEvent(new ResourceLocation(TotallyNotRedstone.MODID, "keypad_error")));
     public static final RegistryObject<ContainerType<KeypadContainer>> KEYPAD_CONTAINER = CONTAINERS.register("keypad", () -> IForgeContainerType.create((windowId, inv, data) -> new KeypadContainer(windowId, TotallyNotRedstone.proxy.getClientWorld(), data.readBlockPos())));
 
     // Buttons
-    public static final RegistryObject<LargeTimedButton> LARGE_SQUARE_TIMED_BUTTON_BLOCK = BLOCKS.register("large_timed_button", () -> new LargeTimedButton(Block.Properties.create(Material.ROCK).doesNotBlockMovement().hardnessAndResistance(0.6f).sound(SoundType.STONE)));
-    public static final RegistryObject<MediumTimedButton> MEDIUM_SQUARE_TIMED_BUTTON_BLOCK = BLOCKS.register("medium_timed_button", () -> new MediumTimedButton(Block.Properties.create(Material.ROCK).doesNotBlockMovement().hardnessAndResistance(0.6f).sound(SoundType.STONE)));
-    public static final RegistryObject<SmallTimedButton> SMALL_SQUARE_TIMED_BUTTON_BLOCK = BLOCKS.register("small_timed_button", () -> new SmallTimedButton(Block.Properties.create(Material.ROCK).doesNotBlockMovement().hardnessAndResistance(0.6f).sound(SoundType.STONE)));
+    public static final RegistryObject<LargeTimedButton> LARGE_SQUARE_TIMED_BUTTON_BLOCK = BLOCKS.register("large_timed_button", () -> new LargeTimedButton(Block.Properties.create(Material.ROCK).doesNotBlockMovement().hardnessAndResistance(TimedButton.BASE_HARDNESS).sound(SoundType.STONE)));
+    public static final RegistryObject<MediumTimedButton> MEDIUM_SQUARE_TIMED_BUTTON_BLOCK = BLOCKS.register("medium_timed_button", () -> new MediumTimedButton(Block.Properties.create(Material.ROCK).doesNotBlockMovement().hardnessAndResistance(TimedButton.BASE_HARDNESS).sound(SoundType.STONE)));
+    public static final RegistryObject<SmallTimedButton> SMALL_SQUARE_TIMED_BUTTON_BLOCK = BLOCKS.register("small_timed_button", () -> new SmallTimedButton(Block.Properties.create(Material.ROCK).doesNotBlockMovement().hardnessAndResistance(TimedButton.BASE_HARDNESS).sound(SoundType.STONE)));
     public static final RegistryObject<Item> LARGE_SQUARE_TIMED_BUTTON_ITEM = ITEMS.register("large_timed_button", () -> new BlockItem(LARGE_SQUARE_TIMED_BUTTON_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
     public static final RegistryObject<Item> MEDIUM_SQUARE_TIMED_BUTTON_ITEM = ITEMS.register("medium_timed_button", () -> new BlockItem(MEDIUM_SQUARE_TIMED_BUTTON_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
     public static final RegistryObject<Item> SMALL_SQUARE_TIMED_BUTTON_ITEM = ITEMS.register("small_timed_button", () -> new BlockItem(SMALL_SQUARE_TIMED_BUTTON_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
@@ -82,7 +79,7 @@ public class Registration {
     public static final RegistryObject<SoundEvent> TIMED_BUTTON_LONG_BEEP_SOUND = SOUNDS.register("timed_button_long_beep", () -> new SoundEvent(new ResourceLocation(TotallyNotRedstone.MODID, "timed_button_long_beep")));
 
     // Wireless Receiver
-    public static final RegistryObject<WirelessRedstoneReceiver> WIRELESS_REDSTONE_RECEIVER_BLOCK = BLOCKS.register("wireless_redstone_receiver", () -> new WirelessRedstoneReceiver(Block.Properties.create(Material.IRON).hardnessAndResistance(1.2F).sound(SoundType.METAL)));
+    public static final RegistryObject<WirelessRedstoneReceiver> WIRELESS_REDSTONE_RECEIVER_BLOCK = BLOCKS.register("wireless_redstone_receiver", () -> new WirelessRedstoneReceiver(Block.Properties.create(Material.IRON).hardnessAndResistance(WirelessRedstoneReceiver.BASE_HARDNESS).sound(SoundType.METAL)));
     public static final RegistryObject<WirelessRedstoneReceiverItem> WIRELESS_REDSTONE_RECEIVER_ITEM = ITEMS.register("wireless_redstone_receiver", () -> new WirelessRedstoneReceiverItem(WIRELESS_REDSTONE_RECEIVER_BLOCK.get(), new Item.Properties().group(ITEM_GROUP)));
     public static final RegistryObject<TileEntityType<WirelessRedstoneReceiverTile>> WIRELESS_REDSTONE_RECEIVER_TILE = TILES.register("wireless_redstone_receiver", () -> TileEntityType.Builder.create(WirelessRedstoneReceiverTile::new, WIRELESS_REDSTONE_RECEIVER_BLOCK.get()).build(null));
 
@@ -95,7 +92,7 @@ public class Registration {
     private static void generateWirelessRedstoneIndicators() {
         for (SolidColors color : SolidColors.values()) {
             String colorName = color.name().toLowerCase();
-            RegistryObject<WirelessRedstoneIndicator> block = BLOCKS.register("wireless_redstone_indicator_"+colorName, () -> new WirelessRedstoneIndicator(Block.Properties.create(Material.IRON).hardnessAndResistance(1.2F).sound(SoundType.METAL)));
+            RegistryObject<WirelessRedstoneIndicator> block = BLOCKS.register("wireless_redstone_indicator_"+colorName, () -> new WirelessRedstoneIndicator(Block.Properties.create(Material.IRON).hardnessAndResistance(WirelessRedstoneIndicator.BASE_HARDNESS).sound(SoundType.METAL)));
             WIRELESS_REDSTONE_INDICATOR_BLOCKS.put(colorName, block);
             WIRELESS_REDSTONE_INDICATOR_ITEMS.put(colorName, ITEMS.register("wireless_redstone_indicator_"+colorName, () -> new WirelessRedstoneIndicatorItem(block.get(), new Item.Properties().group(ITEM_GROUP))));
         }

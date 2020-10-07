@@ -2,6 +2,7 @@ package tv.mongotheelder.tnr.indicators;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
@@ -19,7 +20,7 @@ import javax.annotation.Nullable;
 
 public class WirelessRedstoneIndicator extends SixWayFacingBlock {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final float BASE_HARDNESS = 1.2f;
+    public static final float BASE_HARDNESS = 0.6f;
 
     private AxisAlignedBB SHAPE = new AxisAlignedBB(7, 7, 0, 9, 9, 0.25);
 
@@ -38,9 +39,9 @@ public class WirelessRedstoneIndicator extends SixWayFacingBlock {
         return rotatedShape(SHAPE, state.get(BlockStateProperties.FACE), state.get(BlockStateProperties.HORIZONTAL_FACING));
     }
 
-    @Deprecated
+    @Override
     @SuppressWarnings("deprecation")
-    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
         return Config.WIRELESS_REDSTONE_INDICATOR_UNBREAKABLE.get() ? -1f : BASE_HARDNESS;
     }
 

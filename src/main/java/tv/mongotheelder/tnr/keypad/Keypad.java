@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 
 public class Keypad extends HorizontalFacingBlock {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static final float BASE_HARDNESS = 1.2f;
+    public static final float BASE_HARDNESS = 1.2f;
 
     private static final AxisAlignedBB SHAPE = new AxisAlignedBB(6.5D, 5.5D, 0.0D, 10.5D, 10.5D, 0.5D);
 
@@ -38,9 +38,9 @@ public class Keypad extends HorizontalFacingBlock {
                 .with(BlockStateProperties.POWERED, false));
     }
 
-    @Deprecated
+    @Override
     @SuppressWarnings("deprecation")
-    public float getBlockHardness(BlockState blockState, IBlockReader worldIn, BlockPos pos) {
+    public float getPlayerRelativeBlockHardness(BlockState state, PlayerEntity player, IBlockReader worldIn, BlockPos pos) {
         return Config.KEYPAD_UNBREAKABLE.get() ? -1f : BASE_HARDNESS;
     }
 

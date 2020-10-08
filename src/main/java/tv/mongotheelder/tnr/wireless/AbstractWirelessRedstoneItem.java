@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.*;
 import net.minecraft.world.World;
@@ -16,13 +17,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import tv.mongotheelder.tnr.TotallyNotRedstone;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class AbstractWirelessRedstoneItem extends BlockItem {
     private static final String ITEM_TAG = "TNRWirelessRedstoneItem";
-    private static final String TARGET_POS_TAG = "targetPos";
     private static final Logger LOGGER = LogManager.getLogger();
 
     public AbstractWirelessRedstoneItem(Block blockIn, Item.Properties builder) {
@@ -31,14 +32,27 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
 
     private void writeTargetPosTag(ItemUseContext context) {
         CompoundNBT tag = context.getItem().getOrCreateChildTag(ITEM_TAG);
-        tag.put(TARGET_POS_TAG, NBTUtil.writeBlockPos(context.getPos()));
+        tag.put(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG, NBTUtil.writeBlockPos(context.getPos()));
     }
 
     private BlockPos readTargetPosTag(ItemStack stack) {
         CompoundNBT tag = stack.getOrCreateChildTag(ITEM_TAG);
-        if (tag.contains(TARGET_POS_TAG)) {
-            CompoundNBT posTag = tag.getCompound(TARGET_POS_TAG);
+        if (tag.contains(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG)) {
+            CompoundNBT posTag = tag.getCompound(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG);
             return NBTUtil.readBlockPos(posTag);
+        }
+        return null;
+    }
+
+    private void writeFaceTag(ItemUseContext context) {
+        CompoundNBT tag = context.getItem().getOrCreateChildTag(ITEM_TAG);
+        tag.putString(TotallyNotRedstone.WIRELESS_REDSTONE_FACE_TAG, context.getFace().getName2());
+    }
+
+    private Direction readFaceTag(ItemStack stack) {
+        CompoundNBT tag = stack.getOrCreateChildTag(ITEM_TAG);
+        if (tag.contains(TotallyNotRedstone.WIRELESS_REDSTONE_FACE_TAG)) {
+            return Direction.byName(tag.getString(TotallyNotRedstone.WIRELESS_REDSTONE_FACE_TAG));
         }
         return null;
     }
@@ -51,6 +65,7 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
         if (context.getPlayer().isCrouching()) {
             if (isValidSourceBlock(context.getWorld(), context.getPos())) {
                 writeTargetPosTag(context);
+                writeFaceTag(context);
             }
             return ActionResultType.SUCCESS;
         } else {
@@ -59,27 +74,17 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
         }
     }
 
-    private StringTextComponent coloredTextComponent(String tip, TextFormatting color) {
-        StringTextComponent stringTextComponent = new StringTextComponent(tip);
-        Style style = stringTextComponent.getStyle();
-        style.setFormatting(color);
-        stringTextComponent.setStyle(style);
-        return stringTextComponent;
-    }
-    /**
-     * allows items to add custom lines of information to the mouseover description
-     */
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         BlockPos targetPos = readTargetPosTag(stack);
         if (targetPos != null && worldIn != null && worldIn.isBlockPresent(targetPos) && isValidSourceBlock(worldIn, targetPos)) {
-            String blockType = worldIn.getBlockState(targetPos).getBlock().getTranslationKey();
-            TranslationTextComponent blockName = new TranslationTextComponent(blockType);
-            String newTip = String.format("Linked to %s at %d %d %d", blockName.getUnformattedComponentText(), targetPos.getX(), targetPos.getY(), targetPos.getZ());
-            tooltip.add(coloredTextComponent(newTip, TextFormatting.GREEN));
+            String blockName = worldIn.getBlockState(targetPos).getBlock().getTranslatedName().getString();
+            ITextComponent formattedString = new TranslationTextComponent(TotallyNotRedstone.LINKED_KEY, blockName, targetPos.getX(), targetPos.getY(), targetPos.getZ()).mergeStyle(TextFormatting.GREEN);
+            tooltip.add(formattedString);
         } else {
-            tooltip.add(coloredTextComponent("Not linked", TextFormatting.RED));
+            ITextComponent tipText = new TranslationTextComponent(TotallyNotRedstone.UNLINKED_KEY).mergeStyle(TextFormatting.RED);
+            tooltip.add(tipText);
         }
         super.addInformation(stack, worldIn, tooltip, flagIn);
     }
@@ -97,8 +102,10 @@ public abstract class AbstractWirelessRedstoneItem extends BlockItem {
         if (minecraftserver != null && player != null) {
             AbstractWirelessRedstoneTile tileEntity = (AbstractWirelessRedstoneTile) worldIn.getTileEntity(pos);
             BlockPos targetPos = readTargetPosTag(stack);
+            Direction face = readFaceTag(stack);
             if (tileEntity != null && targetPos != null) {
                 tileEntity.setSourcePos(targetPos);
+                tileEntity.setFace(face);
                 return true;
             } else {
                 LOGGER.error(String.format("Could not locate the tile entity for block at (%d %d %d)", pos.getX(), pos.getY(), pos.getZ()));

@@ -11,6 +11,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ITag;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +23,7 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractWirelessRedstoneTile extends TileEntity {
     protected BlockPos sourcePos;
+    protected Direction face;
     private static final Logger LOGGER = LogManager.getLogger();
 
     public AbstractWirelessRedstoneTile(TileEntityType<?> tileEntityTypeIn) {
@@ -34,6 +36,15 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
             markDirty();
         } else {
             LOGGER.error("Attempted to set a null source block position");
+        }
+    }
+
+    public void setFace(Direction face) {
+        if (face != null) {
+            this.face = face;
+            markDirty();
+        } else {
+            LOGGER.error("Attempted to set a null source face");
         }
     }
 
@@ -52,15 +63,13 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
         CompoundNBT tag = super.getUpdateTag();
         if (sourcePos != null) {
             tag.put(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG, NBTUtil.writeBlockPos(sourcePos));
+            tag.putString(TotallyNotRedstone.WIRELESS_REDSTONE_FACE_TAG, face.getName2());
         }
         return tag;
     }
 
     @Override
     public void handleUpdateTag(BlockState state, CompoundNBT tag) {
-        // This is actually the default but placed here so you
-        // know this is the place to potentially have a lighter read() that only
-        // considers things needed client-side
         read(state, tag);
     }
 
@@ -83,6 +92,7 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
         super.read(state, tag);
         if (tag.contains(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG)) {
             sourcePos = NBTUtil.readBlockPos(tag.getCompound(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG));
+            face = Direction.byName(tag.getString(TotallyNotRedstone.WIRELESS_REDSTONE_FACE_TAG));
         }
     }
 
@@ -91,6 +101,9 @@ public abstract class AbstractWirelessRedstoneTile extends TileEntity {
     public CompoundNBT write(CompoundNBT tag) {
         if (sourcePos != null) {
             tag.put(TotallyNotRedstone.WIRELESS_REDSTONE_SOURCE_POS_TAG, NBTUtil.writeBlockPos(sourcePos));
+        }
+        if (face != null) {
+            tag.putString(TotallyNotRedstone.WIRELESS_REDSTONE_FACE_TAG, face.getName2());
         }
         return super.write(tag);
     }

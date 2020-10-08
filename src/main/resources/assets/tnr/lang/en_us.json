@@ -7,6 +7,9 @@
   "gui.tnr.sequencer.trigger": "Trigger Mode",
   "gui.tnr.sequencer.threshold": "Threshold",
 
+  "item.tnr.wireless_redstone.linked": "Linked to %s at %d %d %d",
+  "item.tnr.wireless_redstone.unlinked": "Not Linked",
+
   "block.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
   "item.tnr.wireless_redstone_receiver": "Wireless Redstone Receiver",
 

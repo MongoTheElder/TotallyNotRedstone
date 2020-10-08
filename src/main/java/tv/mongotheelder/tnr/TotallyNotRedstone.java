@@ -20,9 +20,13 @@ public class TotallyNotRedstone {
     public static final String TIMED_BUTTON_ENABLE_SOUND_KEY = "gui.tnr.timed_buttons.enable_sound";
     public static final String TIMED_BUTTONS_TAG = "timed_buttons";
     public static final String WIRELESS_REDSTONE_SOURCE_POS_TAG = "wireless_redstone_source_pos";
+    public static final String WIRELESS_REDSTONE_FACE_TAG = "wireless_redstone_face";
     public static final String KEYPAD_CODE_TAG = "keypad";
     public static final String LOCKED_KEY = "gui.tnr.keypad.locked";
     public static final String UNLOCKED_KEY = "gui.tnr.keypad.unlocked";
+    public static final String LINKED_KEY = "item.tnr.wireless_redstone.linked";
+    public static final String UNLINKED_KEY = "item.tnr.wireless_redstone.unlinked";
+
     public static final ResourceLocation KEYPAD_GUI_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/keypad_gui.png");
     public static final ResourceLocation SEQUENCER_GUI_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/sequencer_gui.png");
     public static final ResourceLocation GUI_BUTTONS_PATH = new ResourceLocation(TotallyNotRedstone.MODID, "textures/gui/gui_buttons.png");

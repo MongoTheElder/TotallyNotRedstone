@@ -8,7 +8,10 @@
     "minecraft:redstone_torch",
     "minecraft:redstone_wall_torch",
     "minecraft:redstone_wire",
+    "minecraft:repeater",
+    "minecraft:comparator",
     "tnr:keypad",
-    "#tnr:timed_buttons"
+    "#tnr:timed_buttons",
+    "tnr:sequencer"
   ]
 }
